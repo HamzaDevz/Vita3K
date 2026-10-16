@@ -348,7 +348,11 @@ bool add_protect(MemState &state, Address addr, const uint32_t size, const MemPe
         const Address start = std::min(it->first, addr);
         protect.size = std::max(it->first + it->second.size, addr + protect.size) - start;
         addr = start;
-        protect.blocks.merge(it->second.blocks); // transfer blocks to the new protect
+        // transfer blocks to the new protect, moving the smaller set into the larger one: re-protecting one
+        // buffer of a segment holding thousands of them must not move every node
+        if (it->second.blocks.size() > protect.blocks.size())
+            std::swap(protect.blocks, it->second.blocks);
+        protect.blocks.merge(it->second.blocks);
         protect.perm = most_restrictive_perm(protect.perm, it->second.perm);
 
         if (it == state.protect_tree.begin()) {
