@@ -1,0 +1,181 @@
+# Soul Sacrifice Delta 1.30 (PCSA00152): prologue from the first save (save ssd-start) to the first Phantom Quest fight
+# The game caps itself at 30 fps; its 60 fps patch wants TARGET=60
+title PCSA00152
+save ssd-start
+patch PCSA00152-60fps
+wait 45
+btn cross               # Press any button
+wait 5
+btn cross               # Continue
+wait 5
+btn cross               # Sauvegarde 1
+wait 4
+btn right               # Yes
+btn cross
+wait 12
+btn cross               # Loading complete
+wait 30                 # opening text, then the movie
+btn start               # skip the movie
+wait 20
+stick 0 32767 1500      # look around the cage until the neighbour shows up
+rstick 0 32767 1500
+rstick 0 -32767 800
+repeat 4 rstick 32767 0 1200
+measure cage            # real-time cutscene with skinned characters
+repeat 20 btn cross 3000
+end
+shot cage
+stick 0 -32767 2500     # step up to the book
+# dialogue lines want cross, the red hand wants a touch on the book: alternate until the Phantom Quest
+btn cross
+wait 2
+tap 900 790
+wait 2
+btn cross
+wait 2
+tap 900 790
+wait 2
+btn cross
+wait 2
+tap 900 790
+wait 2
+btn cross
+wait 2
+tap 900 790
+wait 2
+btn cross
+wait 2
+tap 900 790
+wait 2
+btn cross
+wait 2
+tap 900 790
+wait 2
+btn cross
+wait 2
+tap 900 790
+wait 2
+btn cross
+wait 2
+tap 900 790
+wait 2
+btn cross
+wait 2
+tap 900 790
+wait 2
+btn cross
+wait 2
+tap 900 790
+wait 2
+btn cross
+wait 2
+tap 900 790
+wait 2
+btn cross
+wait 2
+tap 900 790
+wait 2
+btn cross
+wait 2
+tap 900 790
+wait 2
+btn cross
+wait 2
+tap 900 790
+wait 2
+btn cross
+wait 2
+tap 900 790
+wait 2
+btn cross
+wait 2
+tap 900 790
+wait 2
+btn cross
+wait 2
+tap 900 790
+wait 2
+btn cross
+wait 2
+tap 900 790
+wait 2
+btn cross
+wait 2
+tap 900 790
+wait 2
+btn cross
+wait 2
+tap 900 790
+wait 2
+btn cross
+wait 2
+tap 900 790
+wait 2
+btn cross
+wait 2
+tap 900 790
+wait 2
+btn cross
+wait 2
+tap 900 790
+wait 2
+btn cross
+wait 2
+tap 900 790
+wait 2
+btn cross
+wait 2
+tap 900 790
+wait 2
+btn cross
+wait 2
+tap 900 790
+wait 2
+btn cross
+wait 2
+tap 900 790
+wait 2
+btn cross
+wait 2
+tap 900 790
+wait 2
+btn cross
+wait 2
+tap 900 790
+wait 2
+btn cross
+wait 2
+tap 900 790
+wait 2
+btn cross
+wait 2
+tap 900 790
+wait 2
+btn cross
+wait 2
+tap 900 790
+wait 2
+btn cross
+wait 2
+tap 900 790
+wait 2
+btn cross
+wait 2
+tap 900 790
+wait 2
+btn cross
+wait 2
+tap 900 790
+wait 2
+btn cross
+wait 2
+tap 900 790
+wait 2
+shot fight
+measure fight
+wait 15
+repeat 2 stick 0 -32767 4000
+rstick 32767 0 2000
+stick 0 32767 4000
+end
+shot fought

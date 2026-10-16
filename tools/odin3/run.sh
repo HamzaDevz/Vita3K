@@ -3,7 +3,7 @@
 # and writes the measured segments to runs/<run name>/.
 #   PKG       Vita3K package (default: this branch's debuggable build)
 #   SCENARIO  scenarios/<SCENARIO>.txt (default uncharted-intro); its `title` and `save` lines pick the game
-#             and the save restored before booting
+#             and the save restored before booting, a `patch` line a game patch from patches/ (Vita3K format)
 #   TARGET    frame rate the game aims for, for the slow-frame count (default 30)
 #   KEEP=1    leave the game running at the end
 #   COLD=1    start from an empty shader and pipeline cache (first play)
@@ -11,8 +11,9 @@
 #   LOCK_OWNER  lock owner (default vita3k): each parallel session has its own
 #   PROFILE=<segment>:<s>  simpleperf samples the process for <s> seconds from the start of that segment
 #             (its numbers are skewed by the sampling: profile in a run of its own) into runs/<name>/profile.txt
-# Scenario lines: title <ID> | save <name> | wait <s> | btn <name> [ms] | stick|rstick <x> <y> <ms> | tap <x> <y> |
-#   repeat <n> <line> | shot <name> | measure <label> ... end   (inputs between measure and end run while measuring)
+# Scenario lines: title <ID> | save <name> | patch <name> | wait <s> | btn <name> [ms] | stick|rstick <x> <y> <ms> |
+#   tap <x> <y> | repeat <n> <line> | shot <name> | measure <label> ... end
+#   (inputs between measure and end run while measuring)
 A=~/Library/Android/sdk/platform-tools/adb
 D=${0:A:h}
 NAME=$1; shift
@@ -26,6 +27,7 @@ T=/data/local/tmp/vita3k
 [ -f $SC ] || { echo "no scenario $SC"; exit 2; }
 TITLE=$(sed -n 's/^title \([^ #]*\).*/\1/p' $SC)
 SAVE=$(sed -n 's/^save \([^ #]*\).*/\1/p' $SC)
+PATCH=$(sed -n 's/^patch \([^ #]*\).*/\1/p' $SC)
 rm -rf $OUT; mkdir -p $OUT $D/base/$PKG || exit 1
 
 OWNER=${LOCK_OWNER:-vita3k}
@@ -34,7 +36,8 @@ $D/lock.sh take $OWNER || exit 1
 # the end, so a player's build (PKG=...) keeps its progress and settings
 trap '$A shell pkill -f $T/poll.sh; [ "$KEEP" = 1 ] || { $A shell am force-stop $PKG
   [ -f $D/base/$PKG/config.yml ] && $A push $D/base/$PKG/config.yml $F/config.yml >/dev/null
-  for p in $PUT_ASIDE; do $A shell "[ -e $p.player ] && rm -rf $p && mv $p.player $p"; done; }
+  for p in $PUT_ASIDE; do $A shell "[ -e $p.player ] && rm -rf $p && mv $p.player $p"; done
+  [ "$NEWPATCH" = 1 ] && $A shell rm -f $F/patch/$PATCH.txt; }
   [ "$HOLD" = 1 ] || $D/lock.sh release $OWNER' EXIT
 PUT_ASIDE=()
 put_aside() { PUT_ASIDE+=($1); $A shell "[ -e $1.player ] || { [ -e $1 ] && mv $1 $1.player; }; rm -rf $1"; }
@@ -66,6 +69,12 @@ if [ -n "$SAVE" ]; then
   [ -d $D/saves/$SAVE ] || { echo "ABORT: no save $SAVE" | tee $OUT/summary.txt; exit 1; }
   S=$V/ux0/user/00/savedata/$TITLE
   put_aside $S && $A shell mkdir -p ${S:h} && $A push $D/saves/$SAVE $S >/dev/null || exit 1
+fi
+# Vita3K applies the patches/<name>.txt whose name holds the title ID; a patch the build already had stays
+if [ -n "$PATCH" ]; then
+  [ -f $D/patches/$PATCH.txt ] || { echo "ABORT: no patch $PATCH" | tee $OUT/summary.txt; exit 1; }
+  $A shell ls $F/patch/$PATCH.txt >/dev/null 2>&1 || NEWPATCH=1
+  $A shell mkdir -p $F/patch && $A push $D/patches/$PATCH.txt $F/patch/ >/dev/null || exit 1
 fi
 $A shell input keyevent KEYCODE_WAKEUP; $A shell wm dismiss-keyguard
 $A logcat -c
@@ -105,7 +114,7 @@ seg_end() {
 }
 step() {
   case $1 in
-    title|save|""|\#*) ;;
+    title|save|patch|""|\#*) ;;
     wait) sleep $2;;
     btn|stick|rstick) pad "$@";;
     # A short tap is not seen by the games: hold the finger 250 ms (screen pixels, 1920x1080 landscape)

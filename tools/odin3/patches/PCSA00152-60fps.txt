@@ -1,0 +1,4 @@
+# Soul Sacrifice Delta 1.30 (PCSA00152): 60 fps instead of 30
+# The game paces its main loop with a frame timer built from `movs r0, #30`; its logic runs on the measured frame
+# time, so 60 keeps the game speed (same cutscene timing at 30 and 60 fps on the Odin 3)
+0:0x2AB888 0x3C 0x20
