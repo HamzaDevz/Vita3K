@@ -48,5 +48,8 @@ Le scénario part du point de contrôle du prologue après le tutoriel du journa
   à 58 %.
 - La couche de validation Vulkan, activée, coûte 0,9 W et fait passer les trames lentes de 1,1 à 1,8 % : elle est
   désactivée par défaut et la release ne l'embarque plus. La release (`odin3-r1`) tient 60 / 59,8 fps en x2.
+- Le profil du walk (`PROFILE=walk:25`) montrait 5 % des cycles du processus dans la fusion des blocs protégés
+  (`add_protect`, thread de rendu) : corrigé, 10 % de cycles en moins en marche. Les erreurs de la couche de
+  validation (sémaphores du swapchain, filtre linéaire sur la profondeur) sont corrigées aussi (`odin3-r2`).
 - Vita3K Plus rend aussi juste en x2 et x3, mais consomme plus de CPU (4,6 W contre 3 W en x1).
 - Le cache de shaders vide ne change presque rien sur ce scénario : la compilation asynchrone absorbe.
