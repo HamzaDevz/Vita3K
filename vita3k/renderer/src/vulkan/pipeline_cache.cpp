@@ -589,10 +589,11 @@ vk::RenderPass PipelineCache::retrieve_render_pass(vk::Format format, bool force
         .finalLayout = vk::ImageLayout::eDepthStencilReadOnlyOptimal
     };
 
-    std::array<vk::SubpassDependency, 4> dependencies;
+    std::array<vk::SubpassDependency, 5> dependencies;
 
     // external dependency
     // we want the previous render pass to be done when we reach the fragment stage / stencil*depth testing
+    // the depth-stencil clear (loadOp) writes in the early fragment tests, after the attachment layout transition
     dependencies[0] = {
         .srcSubpass = VK_SUBPASS_EXTERNAL,
         .dstSubpass = 0,
@@ -600,6 +601,7 @@ vk::RenderPass PipelineCache::retrieve_render_pass(vk::Format format, bool force
         .dstStageMask = vk::PipelineStageFlagBits::eColorAttachmentOutput | vk::PipelineStageFlagBits::eEarlyFragmentTests,
         .srcAccessMask = vk::AccessFlagBits::eColorAttachmentWrite | vk::AccessFlagBits::eDepthStencilAttachmentWrite,
         .dstAccessMask = vk::AccessFlagBits::eColorAttachmentRead | vk::AccessFlagBits::eDepthStencilAttachmentRead
+            | vk::AccessFlagBits::eDepthStencilAttachmentWrite
     };
 
     if (state.features.support_shader_interlock && no_color) {
@@ -623,9 +625,22 @@ vk::RenderPass PipelineCache::retrieve_render_pass(vk::Format format, bool force
         dependencies[1].srcAccessMask |= vk::AccessFlagBits::eShaderWrite;
     }
 
+    // outgoing dependency
+    // without it, the transition to finalLayout is not ordered before the next render pass on the same attachments
+    dependencies[2] = {
+        .srcSubpass = 0,
+        .dstSubpass = VK_SUBPASS_EXTERNAL,
+        .srcStageMask = vk::PipelineStageFlagBits::eColorAttachmentOutput | vk::PipelineStageFlagBits::eLateFragmentTests,
+        .dstStageMask = vk::PipelineStageFlagBits::eColorAttachmentOutput | vk::PipelineStageFlagBits::eEarlyFragmentTests
+            | vk::PipelineStageFlagBits::eLateFragmentTests,
+        .srcAccessMask = vk::AccessFlagBits::eColorAttachmentWrite | vk::AccessFlagBits::eDepthStencilAttachmentWrite,
+        .dstAccessMask = vk::AccessFlagBits::eColorAttachmentRead | vk::AccessFlagBits::eColorAttachmentWrite
+            | vk::AccessFlagBits::eDepthStencilAttachmentRead | vk::AccessFlagBits::eDepthStencilAttachmentWrite
+    };
+
     // self-dependency
     // this allows us to use a pipeline barrier in the render pass for programmable blending
-    dependencies[2] = {
+    dependencies[3] = {
         .srcSubpass = 0,
         .dstSubpass = 0,
         .srcStageMask = vk::PipelineStageFlagBits::eColorAttachmentOutput,
@@ -637,7 +652,7 @@ vk::RenderPass PipelineCache::retrieve_render_pass(vk::Format format, bool force
 
     // mid-scene flush
     // unity games use it to write to a buffer in a vertex shader then use it as the vertex input in the next draw
-    dependencies[3] = {
+    dependencies[4] = {
         .srcSubpass = 0,
         .dstSubpass = 0,
         .srcStageMask = vk::PipelineStageFlagBits::eVertexShader,
@@ -656,7 +671,7 @@ vk::RenderPass PipelineCache::retrieve_render_pass(vk::Format format, bool force
         pass_info.pAttachments = &attachments[1];
         pass_info.attachmentCount = 1;
         // no need for the self-dependency
-        pass_info.setDependencyCount(2);
+        pass_info.setDependencyCount(3);
     }
 
     render_passes_map[format] = state.device.createRenderPass(pass_info);
