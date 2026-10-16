@@ -1,7 +1,8 @@
 #!/bin/zsh
 # install.sh <apk>: installs a Vita3K build on the Odin 3 and points it at the shared game install
 # (/storage/emulated/0/vita3k-bench/vita). With a build of this branch, also fills that install the first time:
-# firmware (PSVUPDAT.PUP), font package (PSP2UPDAT.PUP), then the pkgs, rif licenses and patches, all copied into
+# firmware (PSVUPDAT.PUP), font package (PSP2UPDAT.PUP), then the pkgs, rif licenses and patches, and the NoNpDrm
+# dumps (<ID>.zip or <ID>.vpk with app/, patch/ and the work.bin license), all copied into
 # /sdcard/Download/vita3k-bench/ with adb (the app cannot read files another app owns, nor the SD card).
 # The caller holds the lock (tools/odin3/lock.sh take).
 A=~/Library/Android/sdk/platform-tools/adb
@@ -68,6 +69,13 @@ for pkg in $(echo $PKGS | grep -v -- '-patch\.pkg$') $(echo $PKGS | grep -- '-pa
   else
     has $V/ux0/app/$ID || { echo "$pkg install failed" >&2; exit 1; }
   fi
+done
+for arc in $($A shell ls $B | tr -d '\r' | grep -E '\.(zip|vpk)$'); do
+  ID=${arc%%[-.]*}
+  has $V/ux0/app/$ID && continue
+  echo "installing $arc"
+  bench --es bench_install_archive $B/$arc
+  has $V/ux0/app/$ID || { echo "$arc install failed" >&2; exit 1; }
 done
 $A shell am force-stop $PKG
 $A shell ls $V/ux0/app | tr -d '\r' | paste -sd' ' -

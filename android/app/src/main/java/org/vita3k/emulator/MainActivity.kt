@@ -26,6 +26,7 @@ class MainActivity : AppCompatActivity() {
         const val EXTRA_BENCH_LICENSE = "bench_install_license"
         const val EXTRA_BENCH_ZRIF = "bench_install_zrif"
         const val EXTRA_BENCH_PUP = "bench_install_pup"
+        const val EXTRA_BENCH_ARCHIVE = "bench_install_archive"
     }
 
     private val appsListViewModel: AppsListViewModel by viewModels()
@@ -144,15 +145,22 @@ class MainActivity : AppCompatActivity() {
         if (intent == null || applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE == 0) return
         val pupPath = intent.getStringExtra(EXTRA_BENCH_PUP)
         val pkgPath = intent.getStringExtra(EXTRA_BENCH_PKG)
-        if (pupPath == null && pkgPath == null) return
+        val archivePath = intent.getStringExtra(EXTRA_BENCH_ARCHIVE)
+        if (pupPath == null && pkgPath == null && archivePath == null) return
         val licensePath = intent.getStringExtra(EXTRA_BENCH_LICENSE)
         intent.removeExtra(EXTRA_BENCH_PUP)
         intent.removeExtra(EXTRA_BENCH_PKG)
+        intent.removeExtra(EXTRA_BENCH_ARCHIVE)
         lifecycleScope.launch {
             // The native side is initialised asynchronously by the apps list: installing before fails at once
             while (!NativeLib.isInitialized()) delay(100)
             if (pupPath != null) {
                 InstallServiceController.startFirmware(this@MainActivity, pupPath)
+                return@launch
+            }
+            // A NoNpDrm dump (zip or vpk with app/, patch/ and the work.bin license)
+            if (archivePath != null) {
+                InstallServiceController.startArchive(this@MainActivity, archivePath)
                 return@launch
             }
             pkgPath ?: return@launch

@@ -124,7 +124,15 @@ for line in "${(@f)$(<$SC)}"; do step ${=line%%\#*}; done
 
 [ -z "$PROFILE" ] || $A shell "simpleperf report -i $T/perf.data --sort comm,symbol --percent-limit 0.3" \
   2>/dev/null | tr -d '\r' | head -n 120 > $OUT/profile.txt
-$A pull $F/vita3k.log $OUT/vita3k.log >/dev/null 2>&1
+# A guest thread stuck on a fault logs gigabytes: keep only both ends of a huge log
+SZ=$($A shell stat -c %s $F/vita3k.log 2>/dev/null | tr -d '\r')
+if [ "${SZ:-0}" -gt 33554432 ]; then
+  { $A exec-out head -c 8388608 $F/vita3k.log; print "\n[run.sh: $SZ bytes, middle cut]"
+    $A exec-out tail -c 8388608 $F/vita3k.log; } > $OUT/vita3k.log
+  $A shell rm -f $F/vita3k.log
+else
+  $A pull $F/vita3k.log $OUT/vita3k.log >/dev/null 2>&1
+fi
 E=$(grep -c '|E|' $OUT/vita3k.log 2>/dev/null); W=$(grep -c '|W|' $OUT/vita3k.log 2>/dev/null)
 echo "log: ${E:-0} errors, ${W:-0} warnings; top: $(grep '|E|' $OUT/vita3k.log 2>/dev/null |
   sed 's/^\[[^]]*\] |E| //' | cut -c1-60 | sort | uniq -c | sort -rn | head -3 | awk '{$1=$1};1' | paste -sd';' -)" |
