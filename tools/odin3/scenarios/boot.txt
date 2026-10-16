@@ -1,0 +1,9 @@
+# Any game (TITLE=<ID>): boots it, presses through the title screen and measures what plays next
+wait 40
+shot boot
+btn start
+repeat 6 btn cross 3000
+measure menu
+wait 20
+end
+shot menu

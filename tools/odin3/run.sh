@@ -21,11 +21,12 @@ OUT=$D/runs/$NAME
 PKG=${PKG:-org.vita3k.emulator.odin3.debug}
 SC=$D/scenarios/${SCENARIO:-uncharted-intro}.txt
 F=/storage/emulated/0/Android/data/$PKG/files
-# Every build shares one installed copy of the games (pref-path), so builds are compared on the same data
-V=/storage/emulated/0/vita3k-bench/vita
+# Every build shares one installed copy of the games (pref-path), so builds are compared on the same data;
+# PREF=<dir> runs on another installation, such as the player's on the SD card
+V=${PREF:-/storage/emulated/0/vita3k-bench/vita}
 T=/data/local/tmp/vita3k
 [ -f $SC ] || { echo "no scenario $SC"; exit 2; }
-TITLE=$(sed -n 's/^title \([^ #]*\).*/\1/p' $SC)
+TITLE=${TITLE:-$(sed -n 's/^title \([^ #]*\).*/\1/p' $SC)}
 SAVE=$(sed -n 's/^save \([^ #]*\).*/\1/p' $SC)
 PATCH=$(sed -n 's/^patch \([^ #]*\).*/\1/p' $SC)
 rm -rf $OUT; mkdir -p $OUT $D/base/$PKG || exit 1
