@@ -30,10 +30,14 @@ rm -rf $OUT; mkdir -p $OUT $D/base/$PKG || exit 1
 
 OWNER=${LOCK_OWNER:-vita3k}
 $D/lock.sh take $OWNER || exit 1
-# The build's own config comes back at the end, so a player's build (PKG=...) keeps its games and settings
+# The build's own config, its per-game config and the player's save in the shared installation come back at
+# the end, so a player's build (PKG=...) keeps its progress and settings
 trap '$A shell pkill -f $T/poll.sh; [ "$KEEP" = 1 ] || { $A shell am force-stop $PKG
-  [ -f $D/base/$PKG/config.yml ] && $A push $D/base/$PKG/config.yml $F/config.yml >/dev/null; }
+  [ -f $D/base/$PKG/config.yml ] && $A push $D/base/$PKG/config.yml $F/config.yml >/dev/null
+  for p in $PUT_ASIDE; do $A shell "[ -e $p.player ] && rm -rf $p && mv $p.player $p"; done; }
   [ "$HOLD" = 1 ] || $D/lock.sh release $OWNER' EXIT
+PUT_ASIDE=()
+put_aside() { PUT_ASIDE+=($1); $A shell "[ -e $1.player ] || { [ -e $1 ] && mv $1 $1.player; }; rm -rf $1"; }
 
 focused() { $A shell dumpsys window | grep mCurrentFocus | grep -q "$PKG/org.vita3k.emulator.Emulator"; }
 pad() { focused || { echo "ABORT: Vita3K lost the focus" | tee -a $OUT/summary.txt; exit 1; }; $A shell sh $T/pad.sh "$@"; }
@@ -56,12 +60,12 @@ $A shell appops set $PKG MANAGE_EXTERNAL_STORAGE allow
 python3 -I $D/setcfg.py $D/base/$PKG/config.yml $OUT/config.yml pref-path=$V/ validation-layer=false "$@" || exit 1
 $A push $OUT/config.yml $F/config.yml >/dev/null
 # A per-game config would silently override the global keys under test
-$A shell rm -f $F/config/config_$TITLE.xml
+put_aside $F/config/config_$TITLE.xml
 [ "$COLD" = 1 ] && $A shell rm -rf $F/cache/shaders/$TITLE
 if [ -n "$SAVE" ]; then
   [ -d $D/saves/$SAVE ] || { echo "ABORT: no save $SAVE" | tee $OUT/summary.txt; exit 1; }
   S=$V/ux0/user/00/savedata/$TITLE
-  $A shell rm -rf $S && $A shell mkdir -p ${S:h} && $A push $D/saves/$SAVE $S >/dev/null || exit 1
+  put_aside $S && $A shell mkdir -p ${S:h} && $A push $D/saves/$SAVE $S >/dev/null || exit 1
 fi
 $A shell input keyevent KEYCODE_WAKEUP; $A shell wm dismiss-keyguard
 $A logcat -c
