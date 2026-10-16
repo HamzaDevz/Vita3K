@@ -776,7 +776,19 @@ std::optional<TextureLookupResult> VKSurfaceCache::retrieve_color_surface_as_tex
                     .subresourceRange = vkutil::color_subresource_range
                 };
                 cmd_buffer.pipelineBarrier(vk::PipelineStageFlagBits::eColorAttachmentOutput | vk::PipelineStageFlagBits::eFragmentShader, vk::PipelineStageFlagBits::eTransfer, {}, {}, {}, img_barrier);
-                cmd_buffer.copyImageToBuffer(info.texture.image, vk::ImageLayout::eTransferSrcOptimal, casted->transition_buffer.buffer, copy_image_buffer);
+                cmd_buffer.copyImageToBuffer(info.texture.image, vk::ImageLayout::eGeneral, casted->transition_buffer.buffer, copy_image_buffer);
+
+                // The second copy reads what the first one wrote
+                vk::BufferMemoryBarrier buffer_barrier{
+                    .srcAccessMask = vk::AccessFlagBits::eTransferWrite,
+                    .dstAccessMask = vk::AccessFlagBits::eTransferRead,
+                    .srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
+                    .dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
+                    .buffer = casted->transition_buffer.buffer,
+                    .offset = 0,
+                    .size = VK_WHOLE_SIZE
+                };
+                cmd_buffer.pipelineBarrier(vk::PipelineStageFlagBits::eTransfer, vk::PipelineStageFlagBits::eTransfer, {}, {}, buffer_barrier, {});
 
                 copy_image_buffer
                     .setBufferOffset(src_byte_offset)
@@ -786,7 +798,8 @@ std::optional<TextureLookupResult> VKSurfaceCache::retrieve_color_surface_as_tex
                 cmd_buffer.copyBufferToImage(casted->transition_buffer.buffer, casted->texture.image, vk::ImageLayout::eTransferDstOptimal, copy_image_buffer);
             }
         }
-        casted->texture.transition_to(cmd_buffer, vkutil::ImageLayout::ColorAttachmentReadWrite);
+        // The casted image is only ever sampled (no color attachment usage)
+        casted->texture.transition_to(cmd_buffer, vkutil::ImageLayout::SampledImage);
 
         return TextureLookupResult{
             casted->texture.view,
