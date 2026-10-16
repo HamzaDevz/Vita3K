@@ -118,6 +118,10 @@ void VKSurfaceCache::destroy_surface(ColorSurfaceCacheInfo &info) {
     }
     info.casted_textures.clear();
 
+    // framebuffers are keyed by view handle and the driver recycles the handle of a destroyed view,
+    // so a framebuffer left on the alternate view would be found again for an unrelated surface
+    if (info.alternate_view)
+        destroy_framebuffers(info.alternate_view);
     destroy_queue.add(info.alternate_view);
     destroy_queue.add(info.reinterpret_store_view);
 
