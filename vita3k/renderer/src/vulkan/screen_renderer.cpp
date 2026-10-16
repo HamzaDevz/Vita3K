@@ -540,14 +540,15 @@ void ScreenRenderer::swap_window() {
         = { vk::PipelineStageFlagBits::eColorAttachmentOutput | vk::PipelineStageFlagBits::eTransfer };
     submit_info.setWaitSemaphores(wait_semaphores);
     submit_info.setWaitDstStageMask(dst_masks);
-    submit_info.setSignalSemaphores(image_ready_semaphores[current_frame]);
+    // The present only releases its wait semaphore once the same image is acquired again: index it by image
+    submit_info.setSignalSemaphores(image_ready_semaphores[swapchain_image_idx]);
     submit_info.setCommandBuffers(current_cmd_buffer);
     state.general_queue.submit(submit_info, fences[swapchain_image_idx]);
 
     // then present the surface
     vk::PresentInfoKHR present_info{
         .waitSemaphoreCount = 1,
-        .pWaitSemaphores = &image_ready_semaphores[current_frame],
+        .pWaitSemaphores = &image_ready_semaphores[swapchain_image_idx],
         .swapchainCount = 1,
         .pSwapchains = &swapchain,
         .pImageIndices = &swapchain_image_idx,

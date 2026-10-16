@@ -578,7 +578,7 @@ void VKTextureCache::configure_sampler(size_t index, const SceGxmTexture &textur
     vk::SamplerCreateInfo sampler_info{
         .magFilter = texture::translate_filter(mag_filter),
         .minFilter = texture::translate_filter(min_filter),
-        .mipmapMode = texture.mip_filter ? vk::SamplerMipmapMode::eLinear : vk::SamplerMipmapMode::eNearest,
+        .mipmapMode = texture.mip_filter && !no_linear ? vk::SamplerMipmapMode::eLinear : vk::SamplerMipmapMode::eNearest,
         .addressModeU = texture::translate_address_mode(uaddr),
         .addressModeV = texture::translate_address_mode(vaddr),
         .addressModeW = vk::SamplerAddressMode::eRepeat,
