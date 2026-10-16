@@ -23,7 +23,7 @@ android {
 		minSdk = 28
 		targetSdk = 35
 		versionCode = 21
-		versionName = "0.2.1-odin3"
+		versionName = "0.2.1-odin3-r1"
 
 		ndk {
 			abiFilters "arm64-v8a"
@@ -110,6 +110,13 @@ android {
 		jniLibs {
 			useLegacyPackaging = true
 		}
+	}
+}
+
+// The validation layer that non-Release native builds download into ../prebuilt never ships in a release
+androidComponents {
+	onVariants(selector().withBuildType('release')) { variant ->
+		variant.packaging.jniLibs.excludes.add('**/libVkLayer_khronos_validation.so')
 	}
 }
 

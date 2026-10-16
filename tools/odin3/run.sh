@@ -9,6 +9,8 @@
 #   COLD=1    start from an empty shader and pipeline cache (first play)
 #   HOLD=1    keep the lock for the next run of a series (the series releases it, within ~15 min)
 #   LOCK_OWNER  lock owner (default vita3k): each parallel session has its own
+#   PROFILE=<segment>:<s>  simpleperf samples the process for <s> seconds from the start of that segment
+#             (its numbers are skewed by the sampling: profile in a run of its own) into runs/<name>/profile.txt
 # Scenario lines: title <ID> | save <name> | wait <s> | btn <name> [ms] | stick|rstick <x> <y> <ms> | tap <x> <y> |
 #   repeat <n> <line> | shot <name> | measure <label> ... end   (inputs between measure and end run while measuring)
 A=~/Library/Android/sdk/platform-tools/adb
@@ -84,6 +86,8 @@ seg_begin() {
   PID=$($A shell pidof $PKG | tr -d '\r')
   $A shell "cat /proc/$PID/task/*/stat" > $SEG/threads_start.txt
   $A shell sh $T/poll.sh 3600 > $SEG/poll.csv &
+  [ "${PROFILE%:*}" = "$1" ] &&
+    $A shell "simpleperf record --app $PKG --duration ${PROFILE#*:} -o $T/perf.data" > $OUT/simpleperf.log 2>&1 &
   # SurfaceFlinger keeps the last 128 presents (4 s at 30 fps): sample every second
   { while [ ! -f $SEG/.stop ]; do $A shell "dumpsys SurfaceFlinger --latency '$LAYER'"; sleep 1; done } > $SEG/sf_latency.txt &
   T0=$SECONDS
@@ -114,6 +118,8 @@ step() {
 for line in "${(@f)$(<$SC)}"; do step ${=line%%\#*}; done
 [ -z "$SEG" ] || seg_end
 
+[ -z "$PROFILE" ] || $A shell "simpleperf report -i $T/perf.data --sort comm,symbol --percent-limit 0.3" \
+  2>/dev/null | tr -d '\r' | head -n 120 > $OUT/profile.txt
 $A pull $F/vita3k.log $OUT/vita3k.log >/dev/null 2>&1
 E=$(grep -c '|E|' $OUT/vita3k.log 2>/dev/null); W=$(grep -c '|W|' $OUT/vita3k.log 2>/dev/null)
 echo "log: ${E:-0} errors, ${W:-0} warnings; top: $(grep '|E|' $OUT/vita3k.log 2>/dev/null |
