@@ -244,6 +244,19 @@ void SinglePassScreenFilter::render(bool is_pre_renderpass, vk::ImageView src_im
 
             screen.current_cmd_buffer.updateBuffer(vao.buffer, screen.swapchain_image_idx * sizeof(screen_vertices_t), sizeof(screen_vertices_t), &vertex_buffer_data);
             last_uvs[screen.swapchain_image_idx] = uvs;
+
+            // the draw of this frame reads the new vertices
+            vk::BufferMemoryBarrier barrier{
+                .srcAccessMask = vk::AccessFlagBits::eTransferWrite,
+                .dstAccessMask = vk::AccessFlagBits::eVertexAttributeRead,
+                .srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
+                .dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
+                .buffer = vao.buffer,
+                .offset = screen.swapchain_image_idx * sizeof(screen_vertices_t),
+                .size = sizeof(screen_vertices_t)
+            };
+            screen.current_cmd_buffer.pipelineBarrier(vk::PipelineStageFlagBits::eTransfer, vk::PipelineStageFlagBits::eVertexInput,
+                vk::DependencyFlags(), {}, barrier, {});
         }
 
         return;
