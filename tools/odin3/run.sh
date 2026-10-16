@@ -46,6 +46,8 @@ focused() { $A shell dumpsys window | grep mCurrentFocus | grep -q "$PKG/org.vit
 pad() { focused || { echo "ABORT: Vita3K lost the focus" | tee -a $OUT/summary.txt; exit 1; }; $A shell sh $T/pad.sh "$@"; }
 # A shot with a reference in refs/<scenario>/ (a correct native-resolution render) also judges the picture
 shot() {
+  # The device clock, to match a shot with the lines of vita3k.log
+  print "$1 $($A shell date +%T.%N | cut -c1-12)" >> $OUT/shots.txt
   $A exec-out screencap -p > $OUT/$1.png && sips -Z 960 $OUT/$1.png --out $OUT/$1.png >/dev/null || return
   local ref=$D/refs/${SC:t:r}/$1.png
   [ -f $ref ] && python3 -I $D/imgdiff.py $ref $OUT/$1.png | tee -a $OUT/summary.txt
