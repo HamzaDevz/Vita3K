@@ -1,12 +1,18 @@
 package org.vita3k.emulator
 
+import android.content.Intent
+import android.content.pm.ApplicationInfo
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.vita3k.emulator.data.AppStorage
+import org.vita3k.emulator.data.InstallRepository
 import org.vita3k.emulator.ui.navigation.AppNavigation
 import org.vita3k.emulator.ui.theme.Vita3KTheme
 import org.vita3k.emulator.ui.viewmodel.AppsListViewModel
@@ -15,6 +21,13 @@ import org.vita3k.emulator.ui.viewmodel.SettingsViewModel
 import org.vita3k.emulator.ui.viewmodel.UserManagementViewModel
 
 class MainActivity : AppCompatActivity() {
+    companion object {
+        const val EXTRA_BENCH_PKG = "bench_install_pkg"
+        const val EXTRA_BENCH_LICENSE = "bench_install_license"
+        const val EXTRA_BENCH_ZRIF = "bench_install_zrif"
+        const val EXTRA_BENCH_PUP = "bench_install_pup"
+    }
+
     private val appsListViewModel: AppsListViewModel by viewModels()
     private val installViewModel: InstallViewModel by viewModels()
     private val settingsViewModel: SettingsViewModel by viewModels()
@@ -117,6 +130,36 @@ class MainActivity : AppCompatActivity() {
                     onAppLaunch = { app -> launchApp(app.titleId, app.title) }
                 )
             }
+        }
+        handleBenchInstall(intent)
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        handleBenchInstall(intent)
+    }
+
+    // Debuggable builds only: lets tools/odin3 install a pkg over adb without going through the pickers
+    private fun handleBenchInstall(intent: Intent?) {
+        if (intent == null || applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE == 0) return
+        val pupPath = intent.getStringExtra(EXTRA_BENCH_PUP)
+        val pkgPath = intent.getStringExtra(EXTRA_BENCH_PKG)
+        if (pupPath == null && pkgPath == null) return
+        val licensePath = intent.getStringExtra(EXTRA_BENCH_LICENSE)
+        intent.removeExtra(EXTRA_BENCH_PUP)
+        intent.removeExtra(EXTRA_BENCH_PKG)
+        lifecycleScope.launch {
+            // The native side is initialised asynchronously by the apps list: installing before fails at once
+            while (!NativeLib.isInitialized()) delay(100)
+            if (pupPath != null) {
+                InstallServiceController.startFirmware(this@MainActivity, pupPath)
+                return@launch
+            }
+            pkgPath ?: return@launch
+            val zrif = intent.getStringExtra(EXTRA_BENCH_ZRIF)
+                ?: licensePath?.let { InstallRepository.convertRifToZrif(it) }
+                ?: InstallRepository.findPkgZrif(pkgPath)
+            InstallServiceController.startPkg(this@MainActivity, pkgPath, zrif, licensePath)
         }
     }
 

@@ -1,0 +1,22 @@
+# Uncharted: Golden Abyss 1.03, prologue checkpoint after the journal tutorial (save uncharted-prologue)
+title PCSF00012
+save uncharted-prologue
+wait 50
+tap 960 600   # Touch to Start
+wait 5
+tap 960 650   # Continue
+wait 4
+measure load  # checkpoint load, where a cold cache compiles most shaders
+tap 1240 864  # Yes
+wait 20
+end
+shot loaded
+measure idle
+wait 20
+end
+measure walk
+repeat 3 stick 0 -32767 5000
+rstick 32767 0 1500
+repeat 2 stick 0 -32767 5000
+end
+shot walked
