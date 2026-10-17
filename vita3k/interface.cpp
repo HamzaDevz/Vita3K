@@ -109,7 +109,7 @@ static bool is_nonpdrm(EmuEnvState &emuenv, const fs::path &output_path) {
     return false;
 }
 
-static bool set_content_path(EmuEnvState &emuenv, const bool is_theme, fs::path &dest_path) {
+static bool set_content_path(EmuEnvState &emuenv, const bool is_theme, const bool is_patch_layer, fs::path &dest_path) {
     if (emuenv.app_info.app_title_id.empty()) {
         LOG_ERROR("param.sfo has no title ID, not installing it");
         return false;
@@ -126,7 +126,7 @@ static bool set_content_path(EmuEnvState &emuenv, const bool is_theme, fs::path 
             dest_path /= fs::path("addcont") / emuenv.app_info.app_title_id / emuenv.app_info.app_content_id;
             emuenv.app_info.app_title += " (DLC)";
         }
-    } else if (emuenv.app_info.app_category.contains("gp")) {
+    } else if (emuenv.app_info.app_category.contains("gp") || is_patch_layer) {
         if (!fs::exists(app_path) || fs::is_empty(app_path)) {
             LOG_ERROR("Install app before patch");
             return false;
@@ -178,10 +178,13 @@ static bool install_archive_content(EmuEnvState &emuenv, const ZipPtr &zip, cons
     const auto is_theme = mz_zip_reader_extract_file_to_callback(zip.get(), (content_path + theme_path).c_str(), &write_to_buffer, &theme, 0);
     const std::string theme_root_name = fallback_theme_root_name(content_path);
 
+    // NoNpDrm dumps keep a patch layer under patch/<title ID>/, even when trimmed dumps give it the app's param.sfo
+    const auto is_patch_layer = content_path.starts_with("patch/") || content_path.contains("/patch/");
+
     auto output_path{ emuenv.vita_fs_path / "ux0" };
     if (mz_zip_reader_extract_file_to_callback(zip.get(), (content_path + sfo_path).c_str(), &write_to_buffer, &buffer, 0)) {
         sfo::get_param_info(emuenv.app_info, buffer, emuenv.cfg.sys_lang);
-        if (!set_content_path(emuenv, is_theme, output_path))
+        if (!set_content_path(emuenv, is_theme, is_patch_layer, output_path))
             return false;
     } else if (is_theme) {
         set_theme_name(emuenv, theme, theme_root_name);
@@ -240,7 +243,7 @@ static bool install_archive_content(EmuEnvState &emuenv, const ZipPtr &zip, cons
         else
             return false;
     }
-    if (!copy_path(output_path, emuenv.vita_fs_path, emuenv.app_info.app_title_id, emuenv.app_info.app_category))
+    if (!copy_path(output_path, emuenv.vita_fs_path, emuenv.app_info.app_title_id, is_patch_layer ? "gp" : emuenv.app_info.app_category))
         return false;
 
     update_progress();
@@ -358,10 +361,11 @@ static bool install_content(EmuEnvState &emuenv, const fs::path &content_path) {
     vfs::FileBuffer buffer;
 
     const auto is_theme = fs::exists(theme_path);
+    const auto is_patch_layer = content_path.parent_path().filename() == "patch";
     auto dst_path{ emuenv.vita_fs_path / "ux0" };
     if (fs_utils::read_data(sfo_path, buffer)) {
         sfo::get_param_info(emuenv.app_info, buffer, emuenv.cfg.sys_lang);
-        if (!set_content_path(emuenv, is_theme, dst_path))
+        if (!set_content_path(emuenv, is_theme, is_patch_layer, dst_path))
             return false;
 
         if (exists(dst_path))
@@ -383,7 +387,7 @@ static bool install_content(EmuEnvState &emuenv, const fs::path &content_path) {
     if (fs::exists(dst_path / "sce_sys/package/") && !is_nonpdrm(emuenv, dst_path))
         return false;
 
-    if (!copy_path(dst_path, emuenv.vita_fs_path, emuenv.app_info.app_title_id, emuenv.app_info.app_category))
+    if (!copy_path(dst_path, emuenv.vita_fs_path, emuenv.app_info.app_title_id, is_patch_layer ? "gp" : emuenv.app_info.app_category))
         return false;
 
     LOG_INFO("{} [{}] installed successfully!", emuenv.app_info.app_title, emuenv.app_info.app_title_id);
