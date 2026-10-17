@@ -33,7 +33,7 @@ namespace renderer::vulkan {
 // Only return the formats we support and make sense for now
 // (technically we can read a D24S8 or D32 as R8R8R8R8, but it is not implemented
 // yet and no game I am aware of does it)
-static bool is_depth_stencil_compatible_format(SceGxmTextureBaseFormat format, bool &can_be_depth) {
+static bool is_depth_stencil_compatible_format(SceGxmTextureBaseFormat format) {
     switch (format) {
         // D16 format
     case SCE_GXM_TEXTURE_BASE_FORMAT_U16:
@@ -43,8 +43,6 @@ static bool is_depth_stencil_compatible_format(SceGxmTextureBaseFormat format, b
     case SCE_GXM_TEXTURE_BASE_FORMAT_F32M:
         // D24S8 format
     case SCE_GXM_TEXTURE_BASE_FORMAT_X8U24:
-        can_be_depth = true;
-        [[fallthrough]];
         // 8bit stencil
     case SCE_GXM_TEXTURE_BASE_FORMAT_U8:
     case SCE_GXM_TEXTURE_BASE_FORMAT_S8:
@@ -118,9 +116,11 @@ void sync_texture(VKContext &context, MemState &mem, std::size_t index, SceGxmTe
     }
 
     bool is_depth_surface = false;
-    if (!lookup_result.has_value() && is_depth_stencil_compatible_format(base_format, is_depth_surface)) {
+    if (!lookup_result.has_value() && is_depth_stencil_compatible_format(base_format)) {
         // Try to retrieve depth/stencil cache
         lookup_result = context.state.surface_cache.retrieve_depth_stencil_as_texture(texture, &texture_viewport);
+        // a stencil read too gets a view in the depth-stencil format, which may not support linear filtering
+        is_depth_surface = lookup_result.has_value();
     }
 
     if (lookup_result.has_value()) {
