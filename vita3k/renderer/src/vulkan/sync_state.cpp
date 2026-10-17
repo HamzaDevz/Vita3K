@@ -111,7 +111,7 @@ void sync_depth_data(VKContext &context) {
         return;
 
     vk::ClearDepthStencilValue clear_value{
-        .depth = context.record.depth_stencil_surface.background_depth
+        .depth = std::clamp(context.record.depth_stencil_surface.background_depth, 0.0f, 1.0f)
     };
     vk::ClearAttachment clear_attachment{
         .aspectMask = vk::ImageAspectFlagBits::eDepth,

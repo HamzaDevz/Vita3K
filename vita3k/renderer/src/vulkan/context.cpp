@@ -346,9 +346,10 @@ void VKContext::start_render_pass(bool create_descriptor_set) {
     }
 
     // only the depth-stencil attachment may be clear if not force loaded
+    // (Vulkan needs a clear depth in [0, 1] without VK_EXT_depth_range_unrestricted)
     std::array<vk::ClearValue, 2> curr_clear_values{};
     curr_clear_values[1].depthStencil = vk::ClearDepthStencilValue{
-        .depth = record.depth_stencil_surface.background_depth,
+        .depth = std::clamp(record.depth_stencil_surface.background_depth, 0.0f, 1.0f),
         .stencil = record.depth_stencil_surface.stencil
     };
     curr_renderpass_info.setClearValues(curr_clear_values);
