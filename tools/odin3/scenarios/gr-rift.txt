@@ -1,0 +1,40 @@
+# Gravity Rush 1.00 (PCSF00024): the first rift plane (world AnotherZone_A, episode 6), where the picture burns to white
+# The game reads its arguments from app0:args.txt: the run wants `-region E -world AnotherZone_A` there
+title PCSF00024
+save gr-ch21
+patch PCSF00024-60fps
+wait 50
+shot boot
+wait 20
+# Gade's dialog, then Kat stands in the rift
+btn cross 100
+wait 1.5
+btn cross 100
+wait 1.5
+btn cross 100
+wait 1.5
+btn cross 100
+wait 1.5
+btn cross 100
+wait 1.5
+btn cross 100
+wait 1.5
+btn cross 100
+wait 1.5
+btn cross 100
+wait 1.5
+btn cross 100
+wait 1.5
+btn cross 100
+wait 1.5
+btn cross 100
+wait 1.5
+btn cross 100
+wait 5
+shot rift
+measure rift
+repeat 3 stick 0 -32767 4000
+rstick 32767 0 1500
+repeat 2 stick 0 -32767 4000
+end
+shot walked

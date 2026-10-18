@@ -1,0 +1,6 @@
+# Gravity Rush 1.00 (PCSF00024): boots on a late save (save gr-ch21, chapter 21) and stops at the title screen
+title PCSF00024
+save gr-ch21
+patch PCSF00024-60fps
+wait 40
+shot boot
