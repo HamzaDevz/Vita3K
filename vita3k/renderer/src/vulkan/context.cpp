@@ -449,8 +449,11 @@ void VKContext::stop_recording(const SceGxmNotification &notif1, const SceGxmNot
         current_visibility_buffer->queries_used.assign(current_visibility_buffer->size, false);
     }
 
+    // When CPU reads are trapped, only the surfaces the game actually read are synced back, which is cheap:
+    // disable_surface_sync only spares syncing every linear surface when the memory cannot be protected
+    const bool sync_read_surfaces = !state.disable_surface_sync || state.surface_cache.can_mprotect_mapped_memory;
     ColorSurfaceCacheInfo *surface_info = nullptr;
-    if (state.features.enable_memory_mapping && !state.disable_surface_sync && submit)
+    if (state.features.enable_memory_mapping && sync_read_surfaces && submit)
         surface_info = state.surface_cache.perform_surface_sync();
 
     prerender_cmd.end();
