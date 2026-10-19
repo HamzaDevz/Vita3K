@@ -23,6 +23,7 @@
 #include <io/util.h>
 #include <io/vfs.h>
 
+#include <kernel/thread/thread_state.h>
 #include <rtc/rtc.h>
 #include <util/log.h>
 #include <util/preprocessor.h>
@@ -44,6 +45,16 @@
 #if defined(__aarch64__) && defined(__APPLE__)
 #define stat64 stat
 #endif
+
+struct TtyState {
+    std::mutex mutex;
+    TtyFiles files;
+    WaitQueue<SceUID> readers;
+};
+
+IOState::IOState()
+    : redirect_stdio(false)
+    , tty_state(std::make_shared<TtyState>()) {}
 
 // ****************************
 // * Utility functions *
@@ -136,7 +147,11 @@ bool init(IOState &io, const fs::path &cache_path, const fs::path &log_path, con
 void io_deinit(IOState &io) {
     io.std_files.clear();
     io.dir_entries.clear();
-    io.tty_files.clear();
+    {
+        const std::lock_guard lock(io.tty_state->mutex);
+        io.tty_state->files.clear();
+        io.tty_state->readers.wake_all(SCE_ERROR_ERRNO_EBADFD);
+    }
 
     io.next_fd = 0;
 
@@ -325,9 +340,14 @@ SceUID open_file(IOState &io, const char *path, const int flags, const fs::path 
             tty_type |= TTY_IN;
         if (flags & SCE_O_WRONLY)
             tty_type |= TTY_OUT;
+        if (flags & SCE_O_NBLOCK)
+            tty_type |= TTY_NONBLOCK;
 
         const auto fd = io.next_fd++;
-        io.tty_files.emplace(fd, tty_type);
+        {
+            const std::lock_guard lock(io.tty_state->mutex);
+            io.tty_state->files.emplace(fd, tty_type);
+        }
 
         LOG_TRACE_IF(log_file_op, "{}: Opening terminal {}:", export_name, device);
         return fd;
@@ -387,7 +407,7 @@ SceUID open_file(IOState &io, const char *path, const int flags, const fs::path 
     return fd;
 }
 
-int read_file(void *data, IOState &io, const SceUID fd, const SceSize size, const char *export_name) {
+int read_file(void *data, IOState &io, const SceUID fd, const SceSize size, const char *export_name, const std::shared_ptr<ThreadState> &thread) {
     assert(data != nullptr);
     assert(size >= 0);
 
@@ -398,12 +418,26 @@ int read_file(void *data, IOState &io, const SceUID fd, const SceSize size, cons
         return static_cast<int>(read);
     }
 
-    const auto tty_file = io.tty_files.find(fd);
-    if (tty_file != io.tty_files.end()) {
-        if (tty_file->second == TTY_IN) {
+    const auto tty = io.tty_state;
+    std::unique_lock lock(tty->mutex);
+    const auto tty_file = tty->files.find(fd);
+    if (tty_file != tty->files.end()) {
+        if (tty_file->second & TTY_IN) {
+            if (size == 0)
+                return 0;
+#ifdef __ANDROID__
+            // Android has no terminal input provider. Host stdin EOF does not mean
+            // that the guest's open terminal has reached EOF.
+            if (tty_file->second & TTY_NONBLOCK)
+                return SCE_ERROR_ERRNO_EAGAIN;
+            if (thread)
+                return guest_result(tty->readers.wait(lock, thread, { SCE_KERNEL_WAITTYPE_EVENT }, fd, Deadline::max(), false));
+#endif
+            lock.unlock();
             std::cin.read(static_cast<char *>(data), size);
-            LOG_TRACE_IF(log_file_op && log_file_read, "{}: Reading terminal fd: {}, size: {}", export_name, log_hex(fd), size);
-            return size;
+            const auto read = static_cast<int>(std::cin.gcount());
+            LOG_TRACE_IF(log_file_op && log_file_read, "{}: Reading terminal fd: {}, size: {}", export_name, log_hex(fd), read);
+            return read;
         }
         return IO_ERROR_UNK();
     }
@@ -420,9 +454,12 @@ int write_file(SceUID fd, const void *data, const SceSize size, const IOState &i
         return IO_ERROR(SCE_ERROR_ERRNO_EBADFD);
     }
 
-    const auto tty_file = io.tty_files.find(fd);
-    if (tty_file != io.tty_files.end()) {
-        if (tty_file->second & TTY_OUT) {
+    std::unique_lock tty_lock(io.tty_state->mutex);
+    const auto tty_file = io.tty_state->files.find(fd);
+    if (tty_file != io.tty_state->files.end()) {
+        const auto type = tty_file->second;
+        tty_lock.unlock();
+        if (type & TTY_OUT) {
             std::string s(static_cast<char const *>(data), size);
 
             // trim newline
@@ -438,6 +475,7 @@ int write_file(SceUID fd, const void *data, const SceSize size, const IOState &i
         }
         return IO_ERROR_UNK();
     }
+    tty_lock.unlock();
 
     const auto file = io.std_files.find(fd);
     if (file == io.std_files.end())
@@ -622,7 +660,11 @@ int close_file(IOState &io, const SceUID fd, const char *export_name) {
 
     LOG_TRACE_IF(log_file_op, "{}: Closing file fd: {}", export_name, log_hex(fd));
 
-    io.tty_files.erase(fd);
+    {
+        const std::lock_guard lock(io.tty_state->mutex);
+        io.tty_state->files.erase(fd);
+        io.tty_state->readers.wake_if([fd](auto &waiter) { return waiter.entry == fd; }, SCE_ERROR_ERRNO_EBADFD);
+    }
     io.std_files.erase(fd);
 
     return 0;

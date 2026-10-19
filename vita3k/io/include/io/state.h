@@ -98,7 +98,11 @@ typedef std::map<SceUID, TtyType> TtyFiles;
 typedef std::map<SceUID, FileStats> StdFiles;
 typedef std::map<SceUID, DirStats> DirEntries;
 
+struct TtyState;
+
 struct IOState {
+    IOState();
+
     struct DevicePaths {
         std::string app0;
         std::string savedata0;
@@ -117,7 +121,7 @@ struct IOState {
     bool redirect_stdio;
 
     SceUID next_fd = 0;
-    TtyFiles tty_files;
+    std::shared_ptr<TtyState> tty_state;
     StdFiles std_files;
     DirEntries dir_entries;
 

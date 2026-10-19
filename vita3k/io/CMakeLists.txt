@@ -17,4 +17,9 @@ add_library(
 )
 
 target_include_directories(io PUBLIC include)
-target_link_libraries(io PUBLIC dirent rtc util)
+target_link_libraries(io PUBLIC dirent rtc util kernel)
+
+if(ANDROID)
+	add_executable(io-tty-tests EXCLUDE_FROM_ALL tests/tty_tests.cpp)
+	target_link_libraries(io-tty-tests PRIVATE io vita3k)
+endif()

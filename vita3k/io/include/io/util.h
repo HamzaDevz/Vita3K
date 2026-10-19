@@ -30,6 +30,7 @@ inline constexpr TtyType TTY_UNKNOWN = 0b00;
 inline constexpr TtyType TTY_IN = 0b01;
 inline constexpr TtyType TTY_OUT = 0b10;
 inline constexpr TtyType TTY_INOUT = TTY_IN | TTY_OUT;
+inline constexpr TtyType TTY_NONBLOCK = 0b100;
 
 struct FileInfo {
     std::string vita_loc; // The actual location on the Vita

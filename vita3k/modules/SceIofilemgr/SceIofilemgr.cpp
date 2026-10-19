@@ -18,6 +18,7 @@
 #include "SceIofilemgr.h"
 
 #include <io/functions.h>
+#include <kernel/state.h>
 #include <kernel/types.h>
 
 #include <util/tracy.h>
@@ -272,7 +273,7 @@ EXPORT(int, sceIoLseek32, const SceUID fd, const int32_t offset, const SceIoSeek
 
 EXPORT(int, sceIoRead, const SceUID fd, void *data, const SceSize size) {
     TRACY_FUNC(sceIoRead, fd, data, size);
-    return read_file(data, emuenv.io, fd, size, export_name);
+    return read_file(data, emuenv.io, fd, size, export_name, emuenv.kernel.get_thread(thread_id));
 }
 
 EXPORT(int, sceIoReadAsync) {
