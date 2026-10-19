@@ -1,0 +1,4 @@
+# Metal Slug 3 1.01 (PCSB00772): keep the FOCAL worker sleeps above Android's costly sub-millisecond range.
+# The game's wrapper normally forwards 200 us sleeps. Clamp only this wrapper to 1000 us; its longer sleeps stay
+# unchanged. This avoids changing Vita3K's scheduler or any other title.
+0:0x1B422 0x10 0xB5 0x40 0xF2 0xE8 0x31 0x88 0x42 0x38 0xBF 0x08 0x46 0xDD 0xF0 0xA2 0xED 0x10 0xBD 0x00 0xBF
