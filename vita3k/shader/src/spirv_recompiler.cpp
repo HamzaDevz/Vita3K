@@ -1767,6 +1767,15 @@ static spv::Function *make_vert_finalize_function(spv::Builder &b, const SpirvSh
             }
 
             o_op.num += properties.component_count;
+        } else if (translation_state.is_vulkan && vo != SCE_GXM_VERTEX_PROGRAM_OUTPUT_PSIZE) {
+            // GXM can pair a fragment input with an unwritten varying. Vulkan requires
+            // a matching output; give it a defined value without consuming guest registers.
+            const VertexProgramOutputProperties &properties = vertex_properties_map.at(vo);
+            const spv::Id out_type = b.makeVectorType(b.makeFloatType(32), 4);
+            const spv::Id out_var = b.createVariable(spv::NoPrecision, spv::StorageClassOutput, out_type, properties.name.c_str());
+            b.addDecoration(out_var, spv::DecorationLocation, properties.location);
+            translation_state.interfaces.push_back(out_var);
+            b.createStore(b.makeNullConstant(out_type), out_var);
         }
     }
 
