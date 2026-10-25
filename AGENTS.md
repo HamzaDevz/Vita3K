@@ -16,7 +16,8 @@ v1.03. Notes en français, code et commentaires en anglais comme upstream. Les l
   `shot` est fouillé pour des blocs noirs (`BLACK BLOCKS`).
 - Un seul passage ne juge pas un jeu : le prologue d'Uncharted était juste, la suite pleine de carrés noirs. Juger
   sur tous les points des vraies parties de Hamza et les parcours de chapitres (`tools/odin3/harvest.sh` puis
-  `points.sh`, objectif 60 fps, `runs/<nom>/verdict.txt`).
+  `points.sh`, objectif 60 fps, `runs/<nom>/verdict.txt`). Jouer chaque point plusieurs minutes : les carrés noirs
+  d'Uncharted ne paraissent qu'après 1 min 30 de jeu continu.
 - Une session parallèle (autre jeu) travaille dans son propre worktree, avec son verrou (`LOCK_OWNER=<nom>`) et
   son paquet (`-PbenchSuffix=.<nom>` à la build, `PKG=org.vita3k.emulator.odin3.debug.<nom>` au banc).
 - Une optimisation vaut pour tous les jeux : pas de condition par titre.

@@ -40,7 +40,7 @@ tout un jeu chapitre par chapitre, et un plantage n'y coûte que son chapitre (u
 Tous les points de tous les jeux : `harvest.sh` copie chaque sauvegarde des vraies parties du joueur (carte SD) dans
 `saves/player/<ID>/<date>`, une fois par sauvegarde distincte, sans rien lancer ; le relancer après chaque session de
 jeu. `points.sh <nom> [clé=valeur ...]` rejoue sur une build chacun de ces points (le jeu charge la sauvegarde par ses
-menus, `scenarios/continue-<ID>.txt`, puis le personnage reste, marche et regarde autour de lui pendant les mesures)
+menus, `scenarios/continue-<ID>.txt`, puis joue environ 5 min : course, saut, regard, une capture toutes les 25 s)
 et chaque parcours `scenarios/*-chapters.txt`, sur l'installation du joueur, à 60 fps visés, puis écrit un verdict
 par point dans `runs/<nom>/verdict.txt`. Un jeu sans route `continue-<ID>` y est signalé : l'écrire.
 
@@ -72,5 +72,7 @@ Le scénario part du point de contrôle du prologue après le tutoriel du journa
 - Parcours complet (`uncharted-chapters`, release 9621858f, x1 + fps-hack, `TARGET=60`) : prologue et 34 chapitres,
   environ 1 min chacun, entre 58,3 et 60 fps. 11 segments sur 70 en saccades (2,2 à 5,1 % d'images au-delà de 25 ms,
   chapitres 5, 7, 9, 10, 14, 16, 18, 19, 26), 2 plantages (chapitres 17 et 21 : `createGraphicsPipeline` renvoie
-  `ErrorUnknown`), aucun bloc noir sur 103 captures. Les carrés noirs vus par Hamza ne se reproduisent ni là, ni depuis
-  sa sauvegarde du chapitre 1 (`uncharted-suspend`, installation du banc comme carte SD), ni après 2 et 10 min de veille.
+  `ErrorUnknown`), aucun bloc noir sur 103 captures. Mais depuis la sauvegarde du chapitre 1 de Hamza (carte SD), les
+  carrés noirs apparaissent après 1 min 30 de jeu continu et rongent jusqu'à 58 % de l'image (8 captures sur 10, à
+  60 fps) : la corruption s'accumule image après image, une minute par point ne la voit pas. Les routes `continue-<ID>`
+  jouent donc environ 5 min et le parcours 2 min 30 par chapitre (environ 2 h 30).

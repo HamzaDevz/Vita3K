@@ -1,6 +1,7 @@
 # Uncharted: Golden Abyss 1.03: the whole game, prologue and 34 chapters, each from the chapter select of a completed
 # save (save uncharted-chapters, Apollo EU 100%). Each chapter gets a fresh boot, its opening (often a real-time
-# cutscene) measured untouched, then a walk; three shots per chapter. About 90 minutes: TARGET=60 with fps-hack=true.
+# cutscene) measured untouched, then about 2.5 min of play: black squares only grew after 1.5 min of steady play.
+# About 2.5 hours: TARGET=60 with fps-hack=true.
 title PCSF00012
 save uncharted-chapters
 # chapter 0
@@ -14,18 +15,61 @@ tap 960 450                     # the chapter picture
 wait 2
 tap 1240 770                    # Oui
 wait 20
-shot ch00-1
-measure ch00-a                  # opening, untouched
+shot ch00-load
+measure ch00-open               # opening, untouched
 wait 25
 end
-shot ch00-2
-measure ch00-b                  # walk and look around
-repeat 3 stick 0 -32767 5000
-rstick 32767 0 1500
-repeat 2 stick 0 -32767 5000
-rstick -32767 0 3000
+shot ch00-open
+measure ch00-01
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
 end
-shot ch00-3
+shot ch00-01
+measure ch00-02
+repeat 3 stick 0 32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch00-02
+measure ch00-03
+repeat 3 stick -32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch00-03
+measure ch00-04
+repeat 3 stick 0 -32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch00-04
+measure ch00-05
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch00-05
 boot
 # chapter 1
 wait 40
@@ -39,18 +83,61 @@ tap 960 450                     # the chapter picture
 wait 2
 tap 1240 770                    # Oui
 wait 20
-shot ch01-1
-measure ch01-a                  # opening, untouched
+shot ch01-load
+measure ch01-open               # opening, untouched
 wait 25
 end
-shot ch01-2
-measure ch01-b                  # walk and look around
-repeat 3 stick 0 -32767 5000
-rstick 32767 0 1500
-repeat 2 stick 0 -32767 5000
-rstick -32767 0 3000
+shot ch01-open
+measure ch01-01
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
 end
-shot ch01-3
+shot ch01-01
+measure ch01-02
+repeat 3 stick 0 32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch01-02
+measure ch01-03
+repeat 3 stick -32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch01-03
+measure ch01-04
+repeat 3 stick 0 -32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch01-04
+measure ch01-05
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch01-05
 boot
 # chapter 2
 wait 40
@@ -64,18 +151,61 @@ tap 960 450                     # the chapter picture
 wait 2
 tap 1240 770                    # Oui
 wait 20
-shot ch02-1
-measure ch02-a                  # opening, untouched
+shot ch02-load
+measure ch02-open               # opening, untouched
 wait 25
 end
-shot ch02-2
-measure ch02-b                  # walk and look around
-repeat 3 stick 0 -32767 5000
-rstick 32767 0 1500
-repeat 2 stick 0 -32767 5000
-rstick -32767 0 3000
+shot ch02-open
+measure ch02-01
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
 end
-shot ch02-3
+shot ch02-01
+measure ch02-02
+repeat 3 stick 0 32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch02-02
+measure ch02-03
+repeat 3 stick -32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch02-03
+measure ch02-04
+repeat 3 stick 0 -32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch02-04
+measure ch02-05
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch02-05
 boot
 # chapter 3
 wait 40
@@ -89,18 +219,61 @@ tap 960 450                     # the chapter picture
 wait 2
 tap 1240 770                    # Oui
 wait 20
-shot ch03-1
-measure ch03-a                  # opening, untouched
+shot ch03-load
+measure ch03-open               # opening, untouched
 wait 25
 end
-shot ch03-2
-measure ch03-b                  # walk and look around
-repeat 3 stick 0 -32767 5000
-rstick 32767 0 1500
-repeat 2 stick 0 -32767 5000
-rstick -32767 0 3000
+shot ch03-open
+measure ch03-01
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
 end
-shot ch03-3
+shot ch03-01
+measure ch03-02
+repeat 3 stick 0 32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch03-02
+measure ch03-03
+repeat 3 stick -32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch03-03
+measure ch03-04
+repeat 3 stick 0 -32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch03-04
+measure ch03-05
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch03-05
 boot
 # chapter 4
 wait 40
@@ -114,18 +287,61 @@ tap 960 450                     # the chapter picture
 wait 2
 tap 1240 770                    # Oui
 wait 20
-shot ch04-1
-measure ch04-a                  # opening, untouched
+shot ch04-load
+measure ch04-open               # opening, untouched
 wait 25
 end
-shot ch04-2
-measure ch04-b                  # walk and look around
-repeat 3 stick 0 -32767 5000
-rstick 32767 0 1500
-repeat 2 stick 0 -32767 5000
-rstick -32767 0 3000
+shot ch04-open
+measure ch04-01
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
 end
-shot ch04-3
+shot ch04-01
+measure ch04-02
+repeat 3 stick 0 32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch04-02
+measure ch04-03
+repeat 3 stick -32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch04-03
+measure ch04-04
+repeat 3 stick 0 -32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch04-04
+measure ch04-05
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch04-05
 boot
 # chapter 5
 wait 40
@@ -139,18 +355,61 @@ tap 960 450                     # the chapter picture
 wait 2
 tap 1240 770                    # Oui
 wait 20
-shot ch05-1
-measure ch05-a                  # opening, untouched
+shot ch05-load
+measure ch05-open               # opening, untouched
 wait 25
 end
-shot ch05-2
-measure ch05-b                  # walk and look around
-repeat 3 stick 0 -32767 5000
-rstick 32767 0 1500
-repeat 2 stick 0 -32767 5000
-rstick -32767 0 3000
+shot ch05-open
+measure ch05-01
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
 end
-shot ch05-3
+shot ch05-01
+measure ch05-02
+repeat 3 stick 0 32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch05-02
+measure ch05-03
+repeat 3 stick -32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch05-03
+measure ch05-04
+repeat 3 stick 0 -32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch05-04
+measure ch05-05
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch05-05
 boot
 # chapter 6
 wait 40
@@ -164,18 +423,61 @@ tap 960 450                     # the chapter picture
 wait 2
 tap 1240 770                    # Oui
 wait 20
-shot ch06-1
-measure ch06-a                  # opening, untouched
+shot ch06-load
+measure ch06-open               # opening, untouched
 wait 25
 end
-shot ch06-2
-measure ch06-b                  # walk and look around
-repeat 3 stick 0 -32767 5000
-rstick 32767 0 1500
-repeat 2 stick 0 -32767 5000
-rstick -32767 0 3000
+shot ch06-open
+measure ch06-01
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
 end
-shot ch06-3
+shot ch06-01
+measure ch06-02
+repeat 3 stick 0 32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch06-02
+measure ch06-03
+repeat 3 stick -32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch06-03
+measure ch06-04
+repeat 3 stick 0 -32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch06-04
+measure ch06-05
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch06-05
 boot
 # chapter 7
 wait 40
@@ -189,18 +491,61 @@ tap 960 450                     # the chapter picture
 wait 2
 tap 1240 770                    # Oui
 wait 20
-shot ch07-1
-measure ch07-a                  # opening, untouched
+shot ch07-load
+measure ch07-open               # opening, untouched
 wait 25
 end
-shot ch07-2
-measure ch07-b                  # walk and look around
-repeat 3 stick 0 -32767 5000
-rstick 32767 0 1500
-repeat 2 stick 0 -32767 5000
-rstick -32767 0 3000
+shot ch07-open
+measure ch07-01
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
 end
-shot ch07-3
+shot ch07-01
+measure ch07-02
+repeat 3 stick 0 32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch07-02
+measure ch07-03
+repeat 3 stick -32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch07-03
+measure ch07-04
+repeat 3 stick 0 -32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch07-04
+measure ch07-05
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch07-05
 boot
 # chapter 8
 wait 40
@@ -214,18 +559,61 @@ tap 960 450                     # the chapter picture
 wait 2
 tap 1240 770                    # Oui
 wait 20
-shot ch08-1
-measure ch08-a                  # opening, untouched
+shot ch08-load
+measure ch08-open               # opening, untouched
 wait 25
 end
-shot ch08-2
-measure ch08-b                  # walk and look around
-repeat 3 stick 0 -32767 5000
-rstick 32767 0 1500
-repeat 2 stick 0 -32767 5000
-rstick -32767 0 3000
+shot ch08-open
+measure ch08-01
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
 end
-shot ch08-3
+shot ch08-01
+measure ch08-02
+repeat 3 stick 0 32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch08-02
+measure ch08-03
+repeat 3 stick -32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch08-03
+measure ch08-04
+repeat 3 stick 0 -32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch08-04
+measure ch08-05
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch08-05
 boot
 # chapter 9
 wait 40
@@ -239,18 +627,61 @@ tap 960 450                     # the chapter picture
 wait 2
 tap 1240 770                    # Oui
 wait 20
-shot ch09-1
-measure ch09-a                  # opening, untouched
+shot ch09-load
+measure ch09-open               # opening, untouched
 wait 25
 end
-shot ch09-2
-measure ch09-b                  # walk and look around
-repeat 3 stick 0 -32767 5000
-rstick 32767 0 1500
-repeat 2 stick 0 -32767 5000
-rstick -32767 0 3000
+shot ch09-open
+measure ch09-01
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
 end
-shot ch09-3
+shot ch09-01
+measure ch09-02
+repeat 3 stick 0 32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch09-02
+measure ch09-03
+repeat 3 stick -32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch09-03
+measure ch09-04
+repeat 3 stick 0 -32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch09-04
+measure ch09-05
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch09-05
 boot
 # chapter 10
 wait 40
@@ -264,18 +695,61 @@ tap 960 450                     # the chapter picture
 wait 2
 tap 1240 770                    # Oui
 wait 20
-shot ch10-1
-measure ch10-a                  # opening, untouched
+shot ch10-load
+measure ch10-open               # opening, untouched
 wait 25
 end
-shot ch10-2
-measure ch10-b                  # walk and look around
-repeat 3 stick 0 -32767 5000
-rstick 32767 0 1500
-repeat 2 stick 0 -32767 5000
-rstick -32767 0 3000
+shot ch10-open
+measure ch10-01
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
 end
-shot ch10-3
+shot ch10-01
+measure ch10-02
+repeat 3 stick 0 32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch10-02
+measure ch10-03
+repeat 3 stick -32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch10-03
+measure ch10-04
+repeat 3 stick 0 -32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch10-04
+measure ch10-05
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch10-05
 boot
 # chapter 11
 wait 40
@@ -289,18 +763,61 @@ tap 960 450                     # the chapter picture
 wait 2
 tap 1240 770                    # Oui
 wait 20
-shot ch11-1
-measure ch11-a                  # opening, untouched
+shot ch11-load
+measure ch11-open               # opening, untouched
 wait 25
 end
-shot ch11-2
-measure ch11-b                  # walk and look around
-repeat 3 stick 0 -32767 5000
-rstick 32767 0 1500
-repeat 2 stick 0 -32767 5000
-rstick -32767 0 3000
+shot ch11-open
+measure ch11-01
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
 end
-shot ch11-3
+shot ch11-01
+measure ch11-02
+repeat 3 stick 0 32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch11-02
+measure ch11-03
+repeat 3 stick -32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch11-03
+measure ch11-04
+repeat 3 stick 0 -32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch11-04
+measure ch11-05
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch11-05
 boot
 # chapter 12
 wait 40
@@ -314,18 +831,61 @@ tap 960 450                     # the chapter picture
 wait 2
 tap 1240 770                    # Oui
 wait 20
-shot ch12-1
-measure ch12-a                  # opening, untouched
+shot ch12-load
+measure ch12-open               # opening, untouched
 wait 25
 end
-shot ch12-2
-measure ch12-b                  # walk and look around
-repeat 3 stick 0 -32767 5000
-rstick 32767 0 1500
-repeat 2 stick 0 -32767 5000
-rstick -32767 0 3000
+shot ch12-open
+measure ch12-01
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
 end
-shot ch12-3
+shot ch12-01
+measure ch12-02
+repeat 3 stick 0 32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch12-02
+measure ch12-03
+repeat 3 stick -32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch12-03
+measure ch12-04
+repeat 3 stick 0 -32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch12-04
+measure ch12-05
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch12-05
 boot
 # chapter 13
 wait 40
@@ -339,18 +899,61 @@ tap 960 450                     # the chapter picture
 wait 2
 tap 1240 770                    # Oui
 wait 20
-shot ch13-1
-measure ch13-a                  # opening, untouched
+shot ch13-load
+measure ch13-open               # opening, untouched
 wait 25
 end
-shot ch13-2
-measure ch13-b                  # walk and look around
-repeat 3 stick 0 -32767 5000
-rstick 32767 0 1500
-repeat 2 stick 0 -32767 5000
-rstick -32767 0 3000
+shot ch13-open
+measure ch13-01
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
 end
-shot ch13-3
+shot ch13-01
+measure ch13-02
+repeat 3 stick 0 32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch13-02
+measure ch13-03
+repeat 3 stick -32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch13-03
+measure ch13-04
+repeat 3 stick 0 -32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch13-04
+measure ch13-05
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch13-05
 boot
 # chapter 14
 wait 40
@@ -364,18 +967,61 @@ tap 960 450                     # the chapter picture
 wait 2
 tap 1240 770                    # Oui
 wait 20
-shot ch14-1
-measure ch14-a                  # opening, untouched
+shot ch14-load
+measure ch14-open               # opening, untouched
 wait 25
 end
-shot ch14-2
-measure ch14-b                  # walk and look around
-repeat 3 stick 0 -32767 5000
-rstick 32767 0 1500
-repeat 2 stick 0 -32767 5000
-rstick -32767 0 3000
+shot ch14-open
+measure ch14-01
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
 end
-shot ch14-3
+shot ch14-01
+measure ch14-02
+repeat 3 stick 0 32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch14-02
+measure ch14-03
+repeat 3 stick -32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch14-03
+measure ch14-04
+repeat 3 stick 0 -32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch14-04
+measure ch14-05
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch14-05
 boot
 # chapter 15
 wait 40
@@ -389,18 +1035,61 @@ tap 960 450                     # the chapter picture
 wait 2
 tap 1240 770                    # Oui
 wait 20
-shot ch15-1
-measure ch15-a                  # opening, untouched
+shot ch15-load
+measure ch15-open               # opening, untouched
 wait 25
 end
-shot ch15-2
-measure ch15-b                  # walk and look around
-repeat 3 stick 0 -32767 5000
-rstick 32767 0 1500
-repeat 2 stick 0 -32767 5000
-rstick -32767 0 3000
+shot ch15-open
+measure ch15-01
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
 end
-shot ch15-3
+shot ch15-01
+measure ch15-02
+repeat 3 stick 0 32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch15-02
+measure ch15-03
+repeat 3 stick -32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch15-03
+measure ch15-04
+repeat 3 stick 0 -32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch15-04
+measure ch15-05
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch15-05
 boot
 # chapter 16
 wait 40
@@ -414,18 +1103,61 @@ tap 960 450                     # the chapter picture
 wait 2
 tap 1240 770                    # Oui
 wait 20
-shot ch16-1
-measure ch16-a                  # opening, untouched
+shot ch16-load
+measure ch16-open               # opening, untouched
 wait 25
 end
-shot ch16-2
-measure ch16-b                  # walk and look around
-repeat 3 stick 0 -32767 5000
-rstick 32767 0 1500
-repeat 2 stick 0 -32767 5000
-rstick -32767 0 3000
+shot ch16-open
+measure ch16-01
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
 end
-shot ch16-3
+shot ch16-01
+measure ch16-02
+repeat 3 stick 0 32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch16-02
+measure ch16-03
+repeat 3 stick -32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch16-03
+measure ch16-04
+repeat 3 stick 0 -32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch16-04
+measure ch16-05
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch16-05
 boot
 # chapter 17
 wait 40
@@ -439,18 +1171,61 @@ tap 960 450                     # the chapter picture
 wait 2
 tap 1240 770                    # Oui
 wait 20
-shot ch17-1
-measure ch17-a                  # opening, untouched
+shot ch17-load
+measure ch17-open               # opening, untouched
 wait 25
 end
-shot ch17-2
-measure ch17-b                  # walk and look around
-repeat 3 stick 0 -32767 5000
-rstick 32767 0 1500
-repeat 2 stick 0 -32767 5000
-rstick -32767 0 3000
+shot ch17-open
+measure ch17-01
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
 end
-shot ch17-3
+shot ch17-01
+measure ch17-02
+repeat 3 stick 0 32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch17-02
+measure ch17-03
+repeat 3 stick -32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch17-03
+measure ch17-04
+repeat 3 stick 0 -32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch17-04
+measure ch17-05
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch17-05
 boot
 # chapter 18
 wait 40
@@ -464,18 +1239,61 @@ tap 960 450                     # the chapter picture
 wait 2
 tap 1240 770                    # Oui
 wait 20
-shot ch18-1
-measure ch18-a                  # opening, untouched
+shot ch18-load
+measure ch18-open               # opening, untouched
 wait 25
 end
-shot ch18-2
-measure ch18-b                  # walk and look around
-repeat 3 stick 0 -32767 5000
-rstick 32767 0 1500
-repeat 2 stick 0 -32767 5000
-rstick -32767 0 3000
+shot ch18-open
+measure ch18-01
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
 end
-shot ch18-3
+shot ch18-01
+measure ch18-02
+repeat 3 stick 0 32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch18-02
+measure ch18-03
+repeat 3 stick -32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch18-03
+measure ch18-04
+repeat 3 stick 0 -32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch18-04
+measure ch18-05
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch18-05
 boot
 # chapter 19
 wait 40
@@ -489,18 +1307,61 @@ tap 960 450                     # the chapter picture
 wait 2
 tap 1240 770                    # Oui
 wait 20
-shot ch19-1
-measure ch19-a                  # opening, untouched
+shot ch19-load
+measure ch19-open               # opening, untouched
 wait 25
 end
-shot ch19-2
-measure ch19-b                  # walk and look around
-repeat 3 stick 0 -32767 5000
-rstick 32767 0 1500
-repeat 2 stick 0 -32767 5000
-rstick -32767 0 3000
+shot ch19-open
+measure ch19-01
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
 end
-shot ch19-3
+shot ch19-01
+measure ch19-02
+repeat 3 stick 0 32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch19-02
+measure ch19-03
+repeat 3 stick -32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch19-03
+measure ch19-04
+repeat 3 stick 0 -32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch19-04
+measure ch19-05
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch19-05
 boot
 # chapter 20
 wait 40
@@ -514,18 +1375,61 @@ tap 960 450                     # the chapter picture
 wait 2
 tap 1240 770                    # Oui
 wait 20
-shot ch20-1
-measure ch20-a                  # opening, untouched
+shot ch20-load
+measure ch20-open               # opening, untouched
 wait 25
 end
-shot ch20-2
-measure ch20-b                  # walk and look around
-repeat 3 stick 0 -32767 5000
-rstick 32767 0 1500
-repeat 2 stick 0 -32767 5000
-rstick -32767 0 3000
+shot ch20-open
+measure ch20-01
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
 end
-shot ch20-3
+shot ch20-01
+measure ch20-02
+repeat 3 stick 0 32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch20-02
+measure ch20-03
+repeat 3 stick -32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch20-03
+measure ch20-04
+repeat 3 stick 0 -32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch20-04
+measure ch20-05
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch20-05
 boot
 # chapter 21
 wait 40
@@ -539,18 +1443,61 @@ tap 960 450                     # the chapter picture
 wait 2
 tap 1240 770                    # Oui
 wait 20
-shot ch21-1
-measure ch21-a                  # opening, untouched
+shot ch21-load
+measure ch21-open               # opening, untouched
 wait 25
 end
-shot ch21-2
-measure ch21-b                  # walk and look around
-repeat 3 stick 0 -32767 5000
-rstick 32767 0 1500
-repeat 2 stick 0 -32767 5000
-rstick -32767 0 3000
+shot ch21-open
+measure ch21-01
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
 end
-shot ch21-3
+shot ch21-01
+measure ch21-02
+repeat 3 stick 0 32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch21-02
+measure ch21-03
+repeat 3 stick -32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch21-03
+measure ch21-04
+repeat 3 stick 0 -32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch21-04
+measure ch21-05
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch21-05
 boot
 # chapter 22
 wait 40
@@ -564,18 +1511,61 @@ tap 960 450                     # the chapter picture
 wait 2
 tap 1240 770                    # Oui
 wait 20
-shot ch22-1
-measure ch22-a                  # opening, untouched
+shot ch22-load
+measure ch22-open               # opening, untouched
 wait 25
 end
-shot ch22-2
-measure ch22-b                  # walk and look around
-repeat 3 stick 0 -32767 5000
-rstick 32767 0 1500
-repeat 2 stick 0 -32767 5000
-rstick -32767 0 3000
+shot ch22-open
+measure ch22-01
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
 end
-shot ch22-3
+shot ch22-01
+measure ch22-02
+repeat 3 stick 0 32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch22-02
+measure ch22-03
+repeat 3 stick -32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch22-03
+measure ch22-04
+repeat 3 stick 0 -32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch22-04
+measure ch22-05
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch22-05
 boot
 # chapter 23
 wait 40
@@ -589,18 +1579,61 @@ tap 960 450                     # the chapter picture
 wait 2
 tap 1240 770                    # Oui
 wait 20
-shot ch23-1
-measure ch23-a                  # opening, untouched
+shot ch23-load
+measure ch23-open               # opening, untouched
 wait 25
 end
-shot ch23-2
-measure ch23-b                  # walk and look around
-repeat 3 stick 0 -32767 5000
-rstick 32767 0 1500
-repeat 2 stick 0 -32767 5000
-rstick -32767 0 3000
+shot ch23-open
+measure ch23-01
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
 end
-shot ch23-3
+shot ch23-01
+measure ch23-02
+repeat 3 stick 0 32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch23-02
+measure ch23-03
+repeat 3 stick -32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch23-03
+measure ch23-04
+repeat 3 stick 0 -32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch23-04
+measure ch23-05
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch23-05
 boot
 # chapter 24
 wait 40
@@ -614,18 +1647,61 @@ tap 960 450                     # the chapter picture
 wait 2
 tap 1240 770                    # Oui
 wait 20
-shot ch24-1
-measure ch24-a                  # opening, untouched
+shot ch24-load
+measure ch24-open               # opening, untouched
 wait 25
 end
-shot ch24-2
-measure ch24-b                  # walk and look around
-repeat 3 stick 0 -32767 5000
-rstick 32767 0 1500
-repeat 2 stick 0 -32767 5000
-rstick -32767 0 3000
+shot ch24-open
+measure ch24-01
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
 end
-shot ch24-3
+shot ch24-01
+measure ch24-02
+repeat 3 stick 0 32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch24-02
+measure ch24-03
+repeat 3 stick -32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch24-03
+measure ch24-04
+repeat 3 stick 0 -32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch24-04
+measure ch24-05
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch24-05
 boot
 # chapter 25
 wait 40
@@ -639,18 +1715,61 @@ tap 960 450                     # the chapter picture
 wait 2
 tap 1240 770                    # Oui
 wait 20
-shot ch25-1
-measure ch25-a                  # opening, untouched
+shot ch25-load
+measure ch25-open               # opening, untouched
 wait 25
 end
-shot ch25-2
-measure ch25-b                  # walk and look around
-repeat 3 stick 0 -32767 5000
-rstick 32767 0 1500
-repeat 2 stick 0 -32767 5000
-rstick -32767 0 3000
+shot ch25-open
+measure ch25-01
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
 end
-shot ch25-3
+shot ch25-01
+measure ch25-02
+repeat 3 stick 0 32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch25-02
+measure ch25-03
+repeat 3 stick -32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch25-03
+measure ch25-04
+repeat 3 stick 0 -32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch25-04
+measure ch25-05
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch25-05
 boot
 # chapter 26
 wait 40
@@ -664,18 +1783,61 @@ tap 960 450                     # the chapter picture
 wait 2
 tap 1240 770                    # Oui
 wait 20
-shot ch26-1
-measure ch26-a                  # opening, untouched
+shot ch26-load
+measure ch26-open               # opening, untouched
 wait 25
 end
-shot ch26-2
-measure ch26-b                  # walk and look around
-repeat 3 stick 0 -32767 5000
-rstick 32767 0 1500
-repeat 2 stick 0 -32767 5000
-rstick -32767 0 3000
+shot ch26-open
+measure ch26-01
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
 end
-shot ch26-3
+shot ch26-01
+measure ch26-02
+repeat 3 stick 0 32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch26-02
+measure ch26-03
+repeat 3 stick -32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch26-03
+measure ch26-04
+repeat 3 stick 0 -32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch26-04
+measure ch26-05
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch26-05
 boot
 # chapter 27
 wait 40
@@ -689,18 +1851,61 @@ tap 960 450                     # the chapter picture
 wait 2
 tap 1240 770                    # Oui
 wait 20
-shot ch27-1
-measure ch27-a                  # opening, untouched
+shot ch27-load
+measure ch27-open               # opening, untouched
 wait 25
 end
-shot ch27-2
-measure ch27-b                  # walk and look around
-repeat 3 stick 0 -32767 5000
-rstick 32767 0 1500
-repeat 2 stick 0 -32767 5000
-rstick -32767 0 3000
+shot ch27-open
+measure ch27-01
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
 end
-shot ch27-3
+shot ch27-01
+measure ch27-02
+repeat 3 stick 0 32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch27-02
+measure ch27-03
+repeat 3 stick -32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch27-03
+measure ch27-04
+repeat 3 stick 0 -32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch27-04
+measure ch27-05
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch27-05
 boot
 # chapter 28
 wait 40
@@ -714,18 +1919,61 @@ tap 960 450                     # the chapter picture
 wait 2
 tap 1240 770                    # Oui
 wait 20
-shot ch28-1
-measure ch28-a                  # opening, untouched
+shot ch28-load
+measure ch28-open               # opening, untouched
 wait 25
 end
-shot ch28-2
-measure ch28-b                  # walk and look around
-repeat 3 stick 0 -32767 5000
-rstick 32767 0 1500
-repeat 2 stick 0 -32767 5000
-rstick -32767 0 3000
+shot ch28-open
+measure ch28-01
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
 end
-shot ch28-3
+shot ch28-01
+measure ch28-02
+repeat 3 stick 0 32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch28-02
+measure ch28-03
+repeat 3 stick -32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch28-03
+measure ch28-04
+repeat 3 stick 0 -32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch28-04
+measure ch28-05
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch28-05
 boot
 # chapter 29
 wait 40
@@ -739,18 +1987,61 @@ tap 960 450                     # the chapter picture
 wait 2
 tap 1240 770                    # Oui
 wait 20
-shot ch29-1
-measure ch29-a                  # opening, untouched
+shot ch29-load
+measure ch29-open               # opening, untouched
 wait 25
 end
-shot ch29-2
-measure ch29-b                  # walk and look around
-repeat 3 stick 0 -32767 5000
-rstick 32767 0 1500
-repeat 2 stick 0 -32767 5000
-rstick -32767 0 3000
+shot ch29-open
+measure ch29-01
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
 end
-shot ch29-3
+shot ch29-01
+measure ch29-02
+repeat 3 stick 0 32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch29-02
+measure ch29-03
+repeat 3 stick -32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch29-03
+measure ch29-04
+repeat 3 stick 0 -32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch29-04
+measure ch29-05
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch29-05
 boot
 # chapter 30
 wait 40
@@ -764,18 +2055,61 @@ tap 960 450                     # the chapter picture
 wait 2
 tap 1240 770                    # Oui
 wait 20
-shot ch30-1
-measure ch30-a                  # opening, untouched
+shot ch30-load
+measure ch30-open               # opening, untouched
 wait 25
 end
-shot ch30-2
-measure ch30-b                  # walk and look around
-repeat 3 stick 0 -32767 5000
-rstick 32767 0 1500
-repeat 2 stick 0 -32767 5000
-rstick -32767 0 3000
+shot ch30-open
+measure ch30-01
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
 end
-shot ch30-3
+shot ch30-01
+measure ch30-02
+repeat 3 stick 0 32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch30-02
+measure ch30-03
+repeat 3 stick -32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch30-03
+measure ch30-04
+repeat 3 stick 0 -32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch30-04
+measure ch30-05
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch30-05
 boot
 # chapter 31
 wait 40
@@ -789,18 +2123,61 @@ tap 960 450                     # the chapter picture
 wait 2
 tap 1240 770                    # Oui
 wait 20
-shot ch31-1
-measure ch31-a                  # opening, untouched
+shot ch31-load
+measure ch31-open               # opening, untouched
 wait 25
 end
-shot ch31-2
-measure ch31-b                  # walk and look around
-repeat 3 stick 0 -32767 5000
-rstick 32767 0 1500
-repeat 2 stick 0 -32767 5000
-rstick -32767 0 3000
+shot ch31-open
+measure ch31-01
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
 end
-shot ch31-3
+shot ch31-01
+measure ch31-02
+repeat 3 stick 0 32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch31-02
+measure ch31-03
+repeat 3 stick -32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch31-03
+measure ch31-04
+repeat 3 stick 0 -32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch31-04
+measure ch31-05
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch31-05
 boot
 # chapter 32
 wait 40
@@ -814,18 +2191,61 @@ tap 960 450                     # the chapter picture
 wait 2
 tap 1240 770                    # Oui
 wait 20
-shot ch32-1
-measure ch32-a                  # opening, untouched
+shot ch32-load
+measure ch32-open               # opening, untouched
 wait 25
 end
-shot ch32-2
-measure ch32-b                  # walk and look around
-repeat 3 stick 0 -32767 5000
-rstick 32767 0 1500
-repeat 2 stick 0 -32767 5000
-rstick -32767 0 3000
+shot ch32-open
+measure ch32-01
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
 end
-shot ch32-3
+shot ch32-01
+measure ch32-02
+repeat 3 stick 0 32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch32-02
+measure ch32-03
+repeat 3 stick -32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch32-03
+measure ch32-04
+repeat 3 stick 0 -32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch32-04
+measure ch32-05
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch32-05
 boot
 # chapter 33
 wait 40
@@ -839,18 +2259,61 @@ tap 960 450                     # the chapter picture
 wait 2
 tap 1240 770                    # Oui
 wait 20
-shot ch33-1
-measure ch33-a                  # opening, untouched
+shot ch33-load
+measure ch33-open               # opening, untouched
 wait 25
 end
-shot ch33-2
-measure ch33-b                  # walk and look around
-repeat 3 stick 0 -32767 5000
-rstick 32767 0 1500
-repeat 2 stick 0 -32767 5000
-rstick -32767 0 3000
+shot ch33-open
+measure ch33-01
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
 end
-shot ch33-3
+shot ch33-01
+measure ch33-02
+repeat 3 stick 0 32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch33-02
+measure ch33-03
+repeat 3 stick -32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch33-03
+measure ch33-04
+repeat 3 stick 0 -32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch33-04
+measure ch33-05
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch33-05
 boot
 # chapter 34
 wait 40
@@ -864,15 +2327,58 @@ tap 960 450                     # the chapter picture
 wait 2
 tap 1240 770                    # Oui
 wait 20
-shot ch34-1
-measure ch34-a                  # opening, untouched
+shot ch34-load
+measure ch34-open               # opening, untouched
 wait 25
 end
-shot ch34-2
-measure ch34-b                  # walk and look around
-repeat 3 stick 0 -32767 5000
-rstick 32767 0 1500
-repeat 2 stick 0 -32767 5000
-rstick -32767 0 3000
+shot ch34-open
+measure ch34-01
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
 end
-shot ch34-3
+shot ch34-01
+measure ch34-02
+repeat 3 stick 0 32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch34-02
+measure ch34-03
+repeat 3 stick -32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch34-03
+measure ch34-04
+repeat 3 stick 0 -32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch34-04
+measure ch34-05
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot ch34-05

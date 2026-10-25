@@ -1,4 +1,4 @@
-# Uncharted: Golden Abyss 1.03 (PCSF00012): loads the player's save (points.sh), then explores
+# Uncharted: Golden Abyss 1.03 (PCSF00012): loads the player's save (points.sh), then plays about 5 min
 title PCSF00012
 wait 45
 shot title
@@ -9,19 +9,105 @@ wait 4
 tap 1240 864  # Oui
 wait 30
 shot loaded
-measure stand
-wait 20
+# Black squares only grew after 1.5 min of steady play from Hamza's chapter 1 save: play ten rounds of about
+# 25 s (run, jump, look around), a shot after each
+measure p01
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
 end
-shot stand
-measure walk
-repeat 3 stick 0 -32767 5000
-rstick 32767 0 1500
-repeat 3 stick 0 -32767 5000
-rstick -32767 0 3000
+shot p01
+measure p02
 repeat 3 stick 0 32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
 end
-shot walked
-measure look
-repeat 8 rstick 32767 0 1500
+shot p02
+measure p03
+repeat 3 stick -32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
 end
-shot looked
+shot p03
+measure p04
+repeat 3 stick 0 -32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot p04
+measure p05
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot p05
+measure p06
+repeat 3 stick 0 32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot p06
+measure p07
+repeat 3 stick -32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot p07
+measure p08
+repeat 3 stick 0 -32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot p08
+measure p09
+repeat 3 stick 32767 -20000 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot p09
+measure p10
+repeat 3 stick 0 32767 5000
+btn cross
+stick 0 -32767 3000
+btn cross
+rstick 32767 0 2000
+rstick 0 -20000 800
+rstick 0 20000 800
+end
+shot p10
