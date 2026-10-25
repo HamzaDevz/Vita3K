@@ -13,7 +13,8 @@
 #             (its numbers are skewed by the sampling: profile in a run of its own) into runs/<name>/profile.txt
 # Scenario lines: title <ID> | save <name> | patch <name> | wait <s> | btn <name> [ms] | stick|rstick <x> <y> <ms> |
 #   tap <x> <y> | swipe <x1> <y1> <x2> <y2> <ms> | repeat <n> <line> | shot <name> | measure <label> ... end |
-#   boot (restart the game, to sweep a game chapter by chapter) (inputs between measure and end run while measuring)
+#   boot (restart the game, to sweep a game chapter by chapter) | suspend <s> (sleep button, <s> seconds off, wake up)
+#   (inputs between measure and end run while measuring)
 # Every shot is checked for black blocks; segments under 95% of TARGET fps are marked BELOW TARGET
 A=~/Library/Android/sdk/platform-tools/adb
 D=${0:A:h}
@@ -156,6 +157,10 @@ step() {
     # A short tap is not seen by the games: hold the finger 250 ms (screen pixels, 1920x1080 landscape)
     tap) need_focus && $A shell input swipe $2 $3 $2 $3 250;;
     swipe) need_focus && $A shell input swipe $2 $3 $4 $5 $6;;
+    # Players put the console to sleep mid-game: Android pauses the game and takes its surface away
+    suspend) $A shell input keyevent KEYCODE_SLEEP; sleep $2
+      $A shell input keyevent KEYCODE_WAKEUP; $A shell wm dismiss-keyguard
+      for i in $(seq 30); do focused && break; sleep 1; done; LAYER="";;
     boot) [ "$SKIP" = 1 ] || need_focus; save_log -$BOOTS; BOOTS=$((BOOTS + 1)); SKIP=0; LAYER=""; launch;;
     repeat) local n=$2; shift 2; for i in $(seq $n); do step "$@"; done;;
     shot) [ -z "$SEG" ] || { echo "a screenshot during a measure stalls SurfaceFlinger" >&2; exit 2; }; shot $2;;

@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 # glitch.py <shot.png>...: blocks of pure black inside the picture, the mark of surfaces the renderer never wrote
 # (Uncharted's big black squares). Needs no reference shot, so it judges every shot of a run. A frame black at more
-# than 85% (load, fade) and edge-to-edge bars (cinematic letterbox) are not counted.
+# than 85% (load, fade) and edge-to-edge bars (cinematic letterbox) are not counted. A hole is exact zero with a hard
+# edge against the lit picture; a shadow fades into dark surroundings (calibrated on Uncharted's 35 chapters).
 import sys
 
 import numpy as np
@@ -12,9 +13,17 @@ MIN_CELLS = 16  # 1024 px, 0.2% of the frame
 MIN_FILL = 0.7  # share of its bounding box a block fills: renderer holes are tiles, shadows are not
 
 
+def hard_edge(peak, x, y, w, h):
+    ring = [peak[max(0, y - 4):y, x:x + w], peak[y + h:y + h + 4, x:x + w],
+            peak[y:y + h, max(0, x - 4):x], peak[y:y + h, x + w:x + w + 4]]
+    ring = np.concatenate([r.ravel() for r in ring])
+    return ring.size and np.mean(ring > 40) >= 0.13
+
+
 def blocks(path):
     rgb = np.asarray(Image.open(path).convert("RGB"), dtype=np.uint8)
     h, w = (rgb.shape[0] // CELL) * CELL, (rgb.shape[1] // CELL) * CELL
+    full = rgb.max(axis=2)
     peak = rgb[:h, :w].max(axis=2).reshape(h // CELL, CELL, w // CELL, CELL).max(axis=(1, 3))
     black = peak <= 6
     rows, cols = black.shape
@@ -42,8 +51,11 @@ def blocks(path):
                 continue
             if (min(rs) == 0 or max(rs) == rows - 1) and bh <= 5 or (min(cs) == 0 or max(cs) == cols - 1) and bw <= 5:
                 continue
-            if len(cells) >= MIN_CELLS and len(cells) / (bh * bw) >= MIN_FILL:
-                found.append((min(cs) * CELL, min(rs) * CELL, bw * CELL, bh * CELL, len(cells)))
+            x, y = min(cs) * CELL, min(rs) * CELL
+            if (len(cells) >= MIN_CELLS and len(cells) / (bh * bw) >= MIN_FILL
+                    and np.mean(full[y:y + bh * CELL, x:x + bw * CELL] == 0) >= 0.75
+                    and hard_edge(full, x, y, bw * CELL, bh * CELL)):
+                found.append((x, y, bw * CELL, bh * CELL, len(cells)))
     return found, rows * cols
 
 

@@ -34,7 +34,8 @@ dont la configuration est rendue à la fin. Variables : `TARGET=60`, `COLD=1` (c
 Chaque `shot`, référence ou non, est aussi fouillé pour des blocs noirs (`glitch.py`) : `BLACK BLOCKS`. Un segment
 sous 95 % de `TARGET` ou avec plus de 2 % de trames lentes est `BELOW TARGET`. La dernière ligne, `verdict`, compte
 segments sous l'objectif, captures cassées et plantages. Une ligne `boot` relance le jeu : un parcours enchaîne ainsi
-tout un jeu chapitre par chapitre, et un plantage n'y coûte que son chapitre (un log par boot).
+tout un jeu chapitre par chapitre, et un plantage n'y coûte que son chapitre (un log par boot). Une ligne
+`suspend <s>` met la console en veille <s> secondes puis la réveille, comme un joueur entre deux sessions.
 
 Le prologue seul ne juge rien : Uncharted y était juste et montrait des carrés noirs plus loin. Un changement de rendu
 ou de perf se juge sur le parcours complet du jeu (`uncharted-chapters`), pas sur un seul passage.
@@ -61,3 +62,8 @@ Le scénario part du point de contrôle du prologue après le tutoriel du journa
   validation (sémaphores du swapchain, filtre linéaire sur la profondeur) sont corrigées aussi (`odin3-r2`).
 - Vita3K Plus rend aussi juste en x2 et x3, mais consomme plus de CPU (4,6 W contre 3 W en x1).
 - Le cache de shaders vide ne change presque rien sur ce scénario : la compilation asynchrone absorbe.
+- Parcours complet (`uncharted-chapters`, release 9621858f, x1 + fps-hack, `TARGET=60`) : prologue et 34 chapitres,
+  environ 1 min chacun, entre 58,3 et 60 fps. 11 segments sur 70 en saccades (2,2 à 5,1 % d'images au-delà de 25 ms,
+  chapitres 5, 7, 9, 10, 14, 16, 18, 19, 26), 2 plantages (chapitres 17 et 21 : `createGraphicsPipeline` renvoie
+  `ErrorUnknown`), aucun bloc noir sur 103 captures. Les carrés noirs vus par Hamza ne se reproduisent ni là, ni depuis
+  sa sauvegarde du chapitre 1 (`uncharted-suspend`, installation du banc comme carte SD), ni après 2 et 10 min de veille.
