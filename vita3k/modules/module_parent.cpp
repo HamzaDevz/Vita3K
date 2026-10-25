@@ -18,7 +18,6 @@
 #include "io/functions.h"
 #include "io/io.h"
 
-#include <boost/filesystem/operations.hpp>
 #include <modules/module_parent.h>
 
 #include <cpu/functions.h>
@@ -194,7 +193,7 @@ SceUID load_module(EmuEnvState &emuenv, const std::string &module_path) {
     {
         const std::lock_guard<std::mutex> lock(emuenv.kernel.mutex);
         const auto &loaded_modules = emuenv.kernel.loaded_modules;
-        auto module_iter = std::find_if(loaded_modules.begin(), loaded_modules.end(), [&](const auto &p) {
+        auto module_iter = std::ranges::find_if(loaded_modules, [&](const auto &p) {
             return module_path == p.second->info.path;
         });
 
@@ -334,7 +333,7 @@ uint32_t start_module(EmuEnvState &emuenv, const SceKernelModuleInfo &module, Sc
         SceInt32 stack_size = SCE_KERNEL_STACK_SIZE_USER_MAIN;
         SceInt32 affinity = SCE_KERNEL_THREAD_CPU_AFFINITY_MASK_DEFAULT;
         // module_start is always called from new thread
-        const ThreadStatePtr module_thread = emuenv.kernel.create_thread(emuenv.mem, module_name, module_start, priority, affinity, stack_size, nullptr);
+        const ThreadStatePtr module_thread = emuenv.kernel.create_thread(emuenv.mem, module_name, module_start, priority, affinity, stack_size, 0, nullptr);
 
         const uint32_t ret = module_thread->run_guest_function(module_start.address(), args, argp.cast<void>());
         module_thread->remove();
@@ -358,7 +357,7 @@ uint32_t stop_module(EmuEnvState &emuenv, const SceKernelModuleInfo &module, Sce
         SceInt32 stack_size = SCE_KERNEL_STACK_SIZE_USER_MAIN;
         SceInt32 affinity = SCE_KERNEL_THREAD_CPU_AFFINITY_MASK_DEFAULT;
         // module_stop is always called from new thread
-        const ThreadStatePtr module_thread = emuenv.kernel.create_thread(emuenv.mem, module_name, module_stop, priority, affinity, stack_size, nullptr);
+        const ThreadStatePtr module_thread = emuenv.kernel.create_thread(emuenv.mem, module_name, module_stop, priority, affinity, stack_size, 0, nullptr);
 
         const uint32_t ret = module_thread->run_guest_function(module_stop.address(), args, argp.cast<void>());
         module_thread->remove();
@@ -420,7 +419,7 @@ int unload_sys_module(EmuEnvState &emuenv, SceSysmoduleModuleId module_id) {
     }
 
     // unload the modules in the reverse order they were loaded
-    std::reverse(loaded_uids.begin(), loaded_uids.end());
+    std::ranges::reverse(loaded_uids);
 
     // first stop everything, then unload
     for (SceUID uid : loaded_uids) {

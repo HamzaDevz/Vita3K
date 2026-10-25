@@ -227,6 +227,9 @@ static Config::CurrentConfig get_runtime_current_config_after_save(
         case config::RestartRequiredSetting::ValidationLayer:
             runtime_current.validation_layer = previous_current.validation_layer;
             break;
+        case config::RestartRequiredSetting::DisableMaskBit:
+            runtime_current.disable_mask_bit = previous_current.disable_mask_bit;
+            break;
         }
     }
 
@@ -245,7 +248,7 @@ void set_current_config(EmuEnvState &emuenv, const std::string &app_path) {
 bool init_paths(Root &root_paths) {
     bool portable = false;
 #ifdef __ANDROID__
-    fs::path internal_storage_path = fs::path(SDL_GetAndroidExternalStoragePath()) / "";
+    fs::path internal_storage_path = fs::path(SDL_GetAndroidExternalStoragePath());
     fs::path vita_storage_path = internal_storage_path / "vita/";
 
     // On Android, static assets are bundled inside the APK and accessed via SDL_IOFromFile.
@@ -255,8 +258,8 @@ bool init_paths(Root &root_paths) {
     root_paths.set_log_path(internal_storage_path);
     root_paths.set_config_path(internal_storage_path);
     root_paths.set_shared_path(internal_storage_path);
-    root_paths.set_cache_path(internal_storage_path / "cache" / "");
-    root_paths.set_patch_path(internal_storage_path / "patch" / "");
+    root_paths.set_cache_path(internal_storage_path / "cache");
+    root_paths.set_patch_path(internal_storage_path / "patch");
 #else
     auto sdl_exe_path = SDL_GetBasePath();
     auto exe_path = fs_utils::utf8_to_path(sdl_exe_path);
@@ -264,19 +267,19 @@ bool init_paths(Root &root_paths) {
     root_paths.set_static_assets_path(exe_path);
 
 #ifdef _WIN32
-    auto portable_path = exe_path / "portable" / "";
+    auto portable_path = exe_path / "portable";
 #elif defined(__APPLE__)
     // On Apple platforms, exe_path is "Contents/Resources/" inside the app bundle.
     // An extra parent_path is apparently needed because of the trailing slash.
-    auto portable_path = exe_path.parent_path().parent_path().parent_path().parent_path() / "portable" / "";
+    auto portable_path = exe_path.parent_path().parent_path().parent_path().parent_path() / "portable";
 #elif defined(__linux__)
     fs::path portable_path = "";
     auto APPIMAGE = getenv("APPIMAGE"); // Used in AppImage
     if (APPIMAGE) {
-        fs::path appimage_path = fs::path(APPIMAGE).remove_filename() / "";
-        portable_path = appimage_path / "portable" / "";
+        fs::path appimage_path = fs::path(APPIMAGE).remove_filename();
+        portable_path = appimage_path / "portable";
     } else {
-        portable_path = exe_path / "portable" / "";
+        portable_path = exe_path / "portable";
     }
 #endif
 
@@ -284,12 +287,12 @@ bool init_paths(Root &root_paths) {
         portable = true;
         // If a portable directory exists, use it for everything else.
         // Note that vita_fs_path should not be the same as the other paths.
-        root_paths.set_vita_fs_path(portable_path / "fs" / "");
+        root_paths.set_vita_fs_path(portable_path / "fs");
         root_paths.set_log_path(portable_path);
         root_paths.set_config_path(portable_path);
         root_paths.set_shared_path(portable_path);
-        root_paths.set_cache_path(portable_path / "cache" / "");
-        root_paths.set_patch_path(portable_path / "patch" / "");
+        root_paths.set_cache_path(portable_path / "cache");
+        root_paths.set_patch_path(portable_path / "patch");
     } else {
         // SDL_GetPrefPath is deferred as it creates the directory.
         // When using a portable directory, it is not needed.
@@ -312,7 +315,7 @@ bool init_paths(Root &root_paths) {
         // For backwards compatibility, though, check if ux0 exists first.
         auto existing_ux0 = vita_fs_path / "ux0";
         if (!fs::is_directory(existing_ux0)) {
-            vita_fs_path = vita_fs_path / "fs" / "";
+            vita_fs_path = vita_fs_path / "fs";
         }
 #endif
 
@@ -320,14 +323,14 @@ bool init_paths(Root &root_paths) {
         root_paths.set_log_path(exe_path);
         root_paths.set_config_path(exe_path);
         root_paths.set_shared_path(exe_path);
-        root_paths.set_cache_path(exe_path / "cache" / "");
-        root_paths.set_patch_path(exe_path / "patch" / "");
+        root_paths.set_cache_path(exe_path / "cache");
+        root_paths.set_patch_path(exe_path / "patch");
 
 #if defined(__linux__)
         // XDG Data Dirs.
         char home_path[PATH_MAX] = {};
         auto env_home = getenv("HOME");
-        if (env_home != NULL)
+        if (env_home != nullptr)
             strncpy(home_path, env_home, PATH_MAX - 1);
         else {
             struct passwd *pw = getpwuid(getuid());
@@ -344,18 +347,18 @@ bool init_paths(Root &root_paths) {
         auto APPDIR = getenv("APPDIR"); // Used by AppImage
 
         // Config and game-specific configs
-        if (XDG_CONFIG_HOME != NULL)
-            root_paths.set_config_path(fs::path(XDG_CONFIG_HOME) / app_name / "");
+        if (XDG_CONFIG_HOME != nullptr)
+            root_paths.set_config_path(fs::path(XDG_CONFIG_HOME) / app_name);
         else if (home_path[0] != '\0')
-            root_paths.set_config_path(fs::path(home_path) / ".config" / app_name / "");
+            root_paths.set_config_path(fs::path(home_path) / ".config" / app_name);
 
         // Logs, cache and dumps
-        if (XDG_CACHE_HOME != NULL) {
-            root_paths.set_cache_path(fs::path(XDG_CACHE_HOME) / app_name / "");
-            root_paths.set_log_path(fs::path(XDG_CACHE_HOME) / app_name / "");
+        if (XDG_CACHE_HOME != nullptr) {
+            root_paths.set_cache_path(fs::path(XDG_CACHE_HOME) / app_name);
+            root_paths.set_log_path(fs::path(XDG_CACHE_HOME) / app_name);
         } else if (home_path[0] != '\0') {
-            root_paths.set_cache_path(fs::path(home_path) / ".cache" / app_name / "");
-            root_paths.set_log_path(fs::path(home_path) / ".cache" / app_name / "");
+            root_paths.set_cache_path(fs::path(home_path) / ".cache" / app_name);
+            root_paths.set_log_path(fs::path(home_path) / ".cache" / app_name);
         }
 
         const constexpr char *static_asset_paths[] = {
@@ -381,20 +384,20 @@ bool init_paths(Root &root_paths) {
             root_paths.set_static_assets_path(exe_path);
 
         // AppImage data directory (Anylinux layout, then the legacy layout)
-        if (APPDIR != NULL && fs::exists(fs::path(APPDIR) / "share/Vita3K"))
+        if (APPDIR != nullptr && fs::exists(fs::path(APPDIR) / "share/Vita3K"))
             root_paths.set_static_assets_path(fs::path(APPDIR) / "share/Vita3K");
-        else if (APPDIR != NULL && fs::exists(fs::path(APPDIR) / "usr/share/Vita3K"))
+        else if (APPDIR != nullptr && fs::exists(fs::path(APPDIR) / "usr/share/Vita3K"))
             root_paths.set_static_assets_path(fs::path(APPDIR) / "usr/share/Vita3K");
 
         // shared path
-        if (XDG_DATA_HOME != NULL)
-            root_paths.set_shared_path(fs::path(XDG_DATA_HOME) / app_name / "");
+        if (XDG_DATA_HOME != nullptr)
+            root_paths.set_shared_path(fs::path(XDG_DATA_HOME) / app_name);
         else if (home_path[0] != '\0')
-            root_paths.set_shared_path(fs::path(home_path) / ".local/share" / app_name / "");
+            root_paths.set_shared_path(fs::path(home_path) / ".local/share" / app_name);
 
         // These default to being in shared path
-        root_paths.set_vita_fs_path(root_paths.get_shared_path() / app_name / "");
-        root_paths.set_patch_path(root_paths.get_shared_path() / "patch" / "");
+        root_paths.set_vita_fs_path(root_paths.get_shared_path() / app_name);
+        root_paths.set_patch_path(root_paths.get_shared_path() / "patch");
 #endif
     }
 #endif
@@ -455,6 +458,10 @@ bool init(EmuEnvState &state, Config &cfg, const Root &root_paths) {
 #endif
 
     state.motion.init();
+
+    if (state.cfg.controller_binds.empty() || state.cfg.controller_binds.size() != 15
+        || state.cfg.controller_axis_binds.empty() || state.cfg.controller_axis_binds.size() != 6)
+        reset_controller_binding(state);
 
     return true;
 }

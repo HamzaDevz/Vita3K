@@ -163,24 +163,33 @@ SceUID KernelState::create_callback(const ThreadStatePtr &thread, const char *na
     return uid;
 }
 
-bool KernelState::delete_callback(SceUID id) {
-    return objects.remove<Callback>(id);
+bool KernelState::delete_callback(SceUID id, SceUID deleter) {
+    return objects.remove<Callback>(id, deleter);
 }
 
 ThreadStatePtr KernelState::create_thread(MemState &mem, const char *name, Ptr<const void> entry_point) {
-    return create_thread(mem, name, entry_point, SCE_KERNEL_DEFAULT_PRIORITY, SCE_KERNEL_THREAD_CPU_AFFINITY_MASK_DEFAULT, SCE_KERNEL_STACK_SIZE_USER_MAIN, nullptr);
+    return create_thread(mem, name, entry_point, SCE_KERNEL_DEFAULT_PRIORITY, SCE_KERNEL_THREAD_CPU_AFFINITY_MASK_DEFAULT, SCE_KERNEL_STACK_SIZE_USER_MAIN, 0, nullptr);
 }
 
-ThreadStatePtr KernelState::create_thread(MemState &mem, const char *name, Ptr<const void> entry_point, int init_priority, SceInt32 affinity_mask, int stack_size, const SceKernelThreadOptParam *option) {
-    ThreadStatePtr thread = std::make_shared<ThreadState>(get_next_uid(), *this, mem);
-    if (thread->init(name, entry_point, init_priority, affinity_mask, stack_size, option) < 0)
+ThreadStatePtr KernelState::create_thread(MemState &mem, const char *name, Ptr<const void> entry_point, int init_priority, SceInt32 affinity_mask, int stack_size, SceUInt32 attr, const SceKernelThreadOptParam *option) {
+    const SceUID id = get_next_uid();
+    int core_num = corenum_allocator.new_corenum();
+    if (core_num < 0) {
+        LOG_ERROR("Out of core number to allocate, use 0");
+        core_num = 0;
+    }
+    CPUStatePtr cpu = init_cpu(cpu_opt, id, static_cast<std::size_t>(core_num), mem);
+    if (!cpu)
         return nullptr;
+    ThreadStatePtr thread = std::make_shared<ThreadState>(id, *this, mem, std::move(cpu), name, entry_point.address(), init_priority, affinity_mask, stack_size, attr, option);
 
     {
         const std::lock_guard<std::mutex> lock(mutex);
         threads.emplace(thread->id, thread);
         if (threads_paused)
-            paused_threads_status[thread->id] = thread->pause();
+            thread->pause();
+        if (threads_suspended)
+            thread->suspend();
     }
 
     ThreadParams params;
@@ -225,25 +234,32 @@ void KernelState::process_exit() {
 
 void KernelState::pause_threads() {
     const std::lock_guard<std::mutex> lock(mutex);
-    // Already paused: keep the statuses recorded by the first call, they are needed to resume.
     if (threads_paused)
         return;
     threads_paused = true;
-    paused_threads_status.clear();
-    for (auto &[_, thread] : threads) {
-        paused_threads_status[thread->id] = thread->pause();
-    }
+    for (auto &[_, thread] : threads)
+        thread->pause();
 }
 
 void KernelState::resume_threads() {
     const std::lock_guard<std::mutex> lock(mutex);
-    for (auto &[_, thread] : threads) {
-        const auto previous = paused_threads_status.find(thread->id);
-        if (previous != paused_threads_status.end())
-            thread->resume_from_pause(previous->second);
-    }
-    paused_threads_status.clear();
+    for (auto &[_, thread] : threads)
+        thread->resume_from_pause();
     threads_paused = false;
+}
+
+void KernelState::suspend_threads() {
+    const std::lock_guard<std::mutex> lock(mutex);
+    threads_suspended = true;
+    for (auto &[_, thread] : threads)
+        thread->suspend();
+}
+
+void KernelState::resume_suspended_threads() {
+    const std::lock_guard<std::mutex> lock(mutex);
+    threads_suspended = false;
+    for (auto &[_, thread] : threads)
+        thread->resume();
 }
 
 void KernelState::deinit(MemState &mem) {
@@ -294,7 +310,6 @@ void KernelState::deinit(MemState &mem) {
 
     next_uid = 1;
 
-    paused_threads_status.clear();
     threads_paused = false;
 }
 

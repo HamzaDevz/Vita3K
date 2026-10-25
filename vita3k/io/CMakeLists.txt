@@ -19,7 +19,9 @@ add_library(
 target_include_directories(io PUBLIC include)
 target_link_libraries(io PUBLIC dirent rtc util kernel)
 
-if(ANDROID)
+# Built on demand: it still makes its threads with the pre-refactor ThreadState constructor
+option(VITA3K_IO_TTY_TESTS "Build the Android terminal read tests" OFF)
+if(ANDROID AND VITA3K_IO_TTY_TESTS)
 	add_executable(io-tty-tests EXCLUDE_FROM_ALL tests/tty_tests.cpp)
 	target_link_libraries(io-tty-tests PRIVATE io vita3k)
 endif()

@@ -21,7 +21,10 @@
 
 #include <util/fs.h>
 
+#include <cstdint>
 #include <optional>
+#include <string>
+#include <vector>
 
 // The frontend that runs the emulator
 enum class Frontend {
@@ -109,6 +112,7 @@ struct Config {
         bool log_uniforms = false;
         bool color_surface_debug = false;
         bool validation_layer = false;
+        bool disable_mask_bit = false;
         bool tracy_primitive_impl = false;
         std::vector<std::string> tracy_advanced_profiling_modules;
     };

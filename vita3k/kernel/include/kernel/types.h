@@ -58,11 +58,13 @@
 #define SCE_KERNEL_EVENT_ATTR_MANUAL_RESET 0x00000000U
 #define SCE_KERNEL_EVENT_ATTR_AUTO_RESET 0x00000100U
 
-// System events of a simple event: set when it is created, reported to waits for it when it is
-// deleted, and the result of a wait that ends with an error
+// System events of a simple event: set when it is created, deleted, opened and closed, and the
+// result of a wait that ends with an error
 #define SCE_KERNEL_EVENT_CREATE 0x00000004U
 #define SCE_KERNEL_EVENT_DELETE 0x00000008U
 #define SCE_KERNEL_EVENT_ERROR 0x00000010U
+#define SCE_KERNEL_EVENT_OPEN 0x00000100U
+#define SCE_KERNEL_EVENT_CLOSE 0x00000200U
 // The bits of a simple event a game may set and clear, the others are system events
 #define SCE_KERNEL_EVENT_USER_DEFINED_MASK 0xFF000000U
 
@@ -134,6 +136,7 @@
 #define SCE_UID_INVALID_UID (SceUID)(0xFFFFFFFF)
 
 #define SCE_ERROR_ERRNO_EINVAL 0x80010016
+#define SCE_ERROR_ERRNO_ENOSYS 0x80010058
 
 constexpr size_t MODULE_INFO_NUM_SEGMENTS = 4;
 
@@ -469,12 +472,26 @@ enum SceEventFlagWaitTypes {
 };
 
 enum SceKernelMemBlockType {
-    SCE_KERNEL_MEMBLOCK_TYPE_USER_RW_UNCACHE = 0x0C208060,
+    SCE_KERNEL_MEMBLOCK_TYPE_USER_CDRAM_L1WBWA_RW = 0x09404060,
+    SCE_KERNEL_MEMBLOCK_TYPE_USER_CDRAM_R = 0x09408040,
+    SCE_KERNEL_MEMBLOCK_TYPE_USER_CDRAM_RW = 0x09408060,
+    SCE_KERNEL_MEMBLOCK_TYPE_USER_MAIN_DEVICE_RW = 0x0C200860,
+    SCE_KERNEL_MEMBLOCK_TYPE_USER_MAIN_R = 0x0C20D040,
     SCE_KERNEL_MEMBLOCK_TYPE_USER_RX = 0x0C20D050,
     SCE_KERNEL_MEMBLOCK_TYPE_USER_RW = 0x0C20D060,
+    SCE_KERNEL_MEMBLOCK_TYPE_USER_RW_UNCACHE = 0x0C208060,
+    SCE_KERNEL_MEMBLOCK_TYPE_USER_MAIN_GAME_RW = 0x0C50D060,
     SCE_KERNEL_MEMBLOCK_TYPE_USER_MAIN_PHYCONT_RW = 0x0C80D060,
     SCE_KERNEL_MEMBLOCK_TYPE_USER_MAIN_PHYCONT_NC_RW = 0x0D808060,
-    SCE_KERNEL_MEMBLOCK_TYPE_USER_CDRAM_RW = 0x09408060
+    SCE_KERNEL_MEMBLOCK_TYPE_USER_MAIN_CDIALOG_RW = 0x0CA0D060,
+    SCE_KERNEL_MEMBLOCK_TYPE_USER_MAIN_CDIALOG_NC_RW = 0x0CA08060,
+    SCE_KERNEL_MEMBLOCK_TYPE_USER_MAIN_TOOL_RW = 0x0CF0D060,
+    SCE_KERNEL_MEMBLOCK_TYPE_USER_MAIN_TOOL_NC_RW = 0x0CF08060,
+    SCE_KERNEL_MEMBLOCK_TYPE_USER_CDIALOG_RO_UNCACHE = 0x0E208040,
+    SCE_KERNEL_MEMBLOCK_TYPE_USER_CDIALOG_RX_UNCACHE = 0x0E208050,
+    SCE_KERNEL_MEMBLOCK_TYPE_USER_CDIALOG_RW_UNCACHE = 0x0E208060,
+    SCE_KERNEL_MEMBLOCK_TYPE_USER_CDIALOG_RO = 0x0E20D040,
+    SCE_KERNEL_MEMBLOCK_TYPE_USER_CDIALOG_RW = 0x0E20D060,
 };
 
 enum SceSysmoduleModuleId : uint16_t {
@@ -690,6 +707,11 @@ struct SceKernelStopModuleOpt {
     SceUInt32 stop;
 };
 
+struct SceKernelVARange {
+    Address addr;
+    SceSize size;
+};
+
 struct SceKernelMemBlockInfo {
     SceSize size;
     Ptr<void> mappedBase;
@@ -763,6 +785,17 @@ struct SceKernelLwCondWork {
 };
 static_assert(sizeof(SceKernelLwCondWork) == 16, "Incorrect size");
 
+struct SceKernelLwCondInfo {
+    SceSize size; /**< Size of this structure (sizeof(SceKernelLwCondInfo)) */
+    SceUID uid; /**< Lightweight condition variable identifier */
+    char name[KERNELOBJECT_MAX_NAME_LENGTH + 1]; /**< Name given to sceKernelCreateLwCond() */
+    SceUInt32 attr; /**< Attributes given to sceKernelCreateLwCond() */
+    Ptr<SceKernelLwCondWork> pWork; /**< Work area given to sceKernelCreateLwCond() */
+    Ptr<SceKernelLwMutexWork> pLwMutex; /**< Work area of the lightweight mutex it uses */
+    SceUInt32 numWaitThreads; /**< Number of threads waiting on it */
+};
+static_assert(sizeof(SceKernelLwCondInfo) == 0x38, "Incorrect size");
+
 struct SceKernelCreateLwMutex_opt {
     int init_count;
     Ptr<SceKernelLwMutexOptParam> opt_param;
@@ -781,6 +814,14 @@ struct SceKernelCreateSema_opt {
     int maxVal;
     Ptr<SceKernelSemaOptParam> option;
 };
+
+// The arguments of sceKernelCancelEventWithSetPattern after the pattern, which its syscall takes
+// through a pointer
+struct SceKernelCancelEventWithSetPattern_opt {
+    SceUInt64 userData;
+    Ptr<SceUInt32> pNumWaitThreads;
+};
+static_assert(sizeof(SceKernelCancelEventWithSetPattern_opt) == 0x10, "Incorrect size");
 
 struct SceKernelCreateMsgPipeOpt {
     /** Size of the structure */
@@ -834,6 +875,37 @@ struct SceKernelEventFlagInfo {
     SceUInt32 currentPattern;
     SceUInt32 numWaitThreads;
 };
+
+// What sceKernelGetEventInfo reports
+struct SceKernelEventInfo {
+    SceSize size;
+    SceUID eventId;
+    char name[KERNELOBJECT_MAX_NAME_LENGTH + 1];
+    SceUInt32 attr;
+    SceUInt32 eventPattern;
+    SceUInt64 userData;
+    SceUInt32 numWaitThreads;
+    SceInt32 reserved;
+};
+static_assert(sizeof(SceKernelEventInfo) == 0x40, "Incorrect size");
+
+// What sceKernelGetTimerInfo reports
+struct SceKernelTimerInfo {
+    SceSize size;
+    SceUID timerId;
+    char name[KERNELOBJECT_MAX_NAME_LENGTH + 1];
+    SceUInt32 attr;
+    SceInt32 active;
+    SceKernelSysClock baseTime;
+    SceKernelSysClock currentTime;
+    SceKernelSysClock schedule;
+    SceKernelSysClock interval;
+    SceInt32 type;
+    SceInt32 repeat;
+    SceUInt32 numWaitThreads;
+    SceInt32 reserved;
+};
+static_assert(sizeof(SceKernelTimerInfo) == 0x60, "Incorrect size");
 
 struct SceKernelMutexInfo {
     SceSize size;

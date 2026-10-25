@@ -97,11 +97,13 @@ struct ColorSurfaceCacheInfo : public SurfaceCacheInfo {
     // R32G32_UINT view of this surface, used as the raw-word input to the
     // typeless reinterpret compute pass. Only created if that path is taken.
     vk::ImageView reinterpret_store_view = nullptr;
+    // sRGB attachment view of the UNORM image used for interlock storage access
+    vk::ImageView gamma_view = nullptr;
 
     // only used when upscaling is enabled, to downscale the image first
     std::unique_ptr<vkutil::Image> blit_image;
 
-    // only used for 3-component rgb textures which can't be copied directly
+    // staging for surfaces whose GPU format differs from the guest memory layout
     std::unique_ptr<vkutil::Buffer> copy_buffer;
 
     // pointer shared with the memory trap indicating if this surface sync is needed

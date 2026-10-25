@@ -41,6 +41,7 @@
 #include <pugixml.hpp>
 
 #include <modules/module_parent.h>
+#include <modules/sysmem_state.h>
 #include <string>
 #include <util/log.h>
 #include <util/string_utils.h>
@@ -225,7 +226,16 @@ static bool install_archive_content(EmuEnvState &emuenv, const ZipPtr &zip, cons
             update_progress();
 
             std::string replace_filename = m_filename.substr(content_path.size());
-            const fs::path file_output = (output_path / fs_utils::utf8_to_path(replace_filename)).generic_path();
+            const fs::path file_output = fs_utils::generic_path(output_path / fs_utils::utf8_to_path(replace_filename));
+
+            const fs::path normalized_output_path = output_path.lexically_normal();
+            const fs::path normalized_file_output = file_output.lexically_normal();
+            const fs::path relative_to_output = normalized_file_output.lexically_relative(normalized_output_path);
+            if (relative_to_output.empty() || *relative_to_output.begin() == "..") {
+                LOG_ERROR("Rejecting archive entry whose path escapes the install directory: {}", m_filename);
+                continue;
+            }
+
             if (mz_zip_reader_is_file_a_directory(zip.get(), i)) {
                 fs::create_directories(file_output);
             } else {
@@ -488,6 +498,7 @@ static ExitCode load_app_impl(SceUID &main_module_id, EmuEnvState &emuenv, const
         sfo::load(emuenv.sfo_handle, param_sfo);
 
     init_exported_vars(emuenv);
+    create_system_font_blocks(emuenv);
 
     // Load main executable
     if (!launch_request.self_path.empty()) {
@@ -501,7 +512,20 @@ static ExitCode load_app_impl(SceUID &main_module_id, EmuEnvState &emuenv, const
     if (main_module_id >= 0) {
         const auto module = emuenv.kernel.loaded_modules[main_module_id];
         LOG_INFO("Main executable {} ({}) loaded", module->info.module_name, emuenv.self_path);
-        const Patches patches = get_patches(emuenv.patch_path, emuenv.io.title_id, "app0:" + emuenv.self_path);
+        uint32_t module_nid = 0;
+        {
+            const std::lock_guard<std::mutex> guard(emuenv.kernel.export_nids_mutex);
+            for (const auto &[nid, uid] : emuenv.kernel.module_uid_by_nid) {
+                if (uid == static_cast<uint32_t>(main_module_id))
+                    module_nid = nid;
+            }
+        }
+        LOG_INFO("Main executable NID: {} (for the NID attribute of a patch)", fmt::format("0x{:08X}", module_nid));
+
+        const std::string bin = "app0:" + emuenv.self_path;
+        Patches patches = get_patches(emuenv.patch_path, emuenv.io.title_id, bin);
+        const Patches xml_patches = get_xml_patches(emuenv.patch_path, emuenv.io.title_id, bin, emuenv.app_info.app_version, module_nid);
+        patches.insert(patches.end(), xml_patches.begin(), xml_patches.end());
         if (!patches.empty())
             do_patches(emuenv.mem, patches, module->info);
     } else
@@ -636,7 +660,8 @@ ExitCode load_app(int32_t &main_module_id, EmuEnvState &emuenv, const AppLaunchR
     }
 
     if (emuenv.cfg.gdbstub) {
-        emuenv.kernel.debugger.wait_for_debugger = true;
+        // The threads wait for the debugger's first continue
+        emuenv.kernel.suspend_threads();
         server_open(emuenv);
     }
 
@@ -688,7 +713,7 @@ ExitCode run_app(EmuEnvState &emuenv, int32_t main_module_id, const AppLaunchReq
     // A main thread without its own affinity runs on every user core and reports them all
     if (affinity == SCE_KERNEL_THREAD_CPU_AFFINITY_MASK_DEFAULT)
         affinity = SCE_KERNEL_CPU_MASK_USER_ALL;
-    const ThreadStatePtr main_thread = emuenv.kernel.create_thread(emuenv.mem, emuenv.io.title_id.c_str(), entry_point, priority, affinity, stack_size, nullptr);
+    const ThreadStatePtr main_thread = emuenv.kernel.create_thread(emuenv.mem, emuenv.io.title_id.c_str(), entry_point, priority, affinity, stack_size, 0, nullptr);
     if (!main_thread) {
         LOG_ERROR("Failed to init main thread.");
         return InitThreadFailed;

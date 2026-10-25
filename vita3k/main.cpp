@@ -97,7 +97,7 @@ int main(int argc, char *argv[]) {
     bool admin_priv = false;
 #ifdef _WIN32
     // https://stackoverflow.com/questions/8046097/how-to-check-if-a-process-has-the-administrative-rights
-    HANDLE hToken = NULL;
+    HANDLE hToken = nullptr;
     if (OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hToken)) {
         TOKEN_ELEVATION Elevation;
         DWORD cbSize = sizeof(TOKEN_ELEVATION);
@@ -146,7 +146,7 @@ int main(int argc, char *argv[]) {
             if (cfg.pkg_path.has_value() && cfg.pkg_zrif.has_value()) {
                 fs::create_directories(cfg.get_vita_fs_path());
                 LOG_INFO("Installing pkg from {} ", *cfg.pkg_path);
-                emuenv.cache_path = root_paths.get_cache_path().generic_path();
+                emuenv.cache_path = root_paths.get_cache_path();
                 emuenv.vita_fs_path = cfg.get_vita_fs_path();
                 auto pkg_path = fs_utils::utf8_to_path(*cfg.pkg_path);
                 install_pkg(pkg_path, emuenv, *cfg.pkg_zrif, [](float) {});
@@ -168,7 +168,7 @@ int main(int argc, char *argv[]) {
 
 #ifdef _WIN32
     {
-        auto res = CoInitializeEx(NULL, COINIT_MULTITHREADED);
+        auto res = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
         LOG_ERROR_IF(res == S_FALSE, "Failed to initialize COM Library");
     }
 #endif
@@ -214,10 +214,6 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    if (emuenv.cfg.controller_binds.empty() || (emuenv.cfg.controller_binds.size() != 15)
-        || emuenv.cfg.controller_axis_binds.empty() || (emuenv.cfg.controller_axis_binds.size() != 6))
-        app::reset_controller_binding(emuenv);
-
     init_libraries(emuenv);
 
     if (!app::init_apps_list(emuenv)) {
@@ -238,7 +234,7 @@ int main(int argc, char *argv[]) {
         if (is_archive) {
             LOG_INFO("Installing archive from CLI: {}", emuenv.cfg.content_path->string());
             std::vector<ContentInfo> contents_info = install_archive(emuenv, *emuenv.cfg.content_path);
-            const auto content_index = std::find_if(contents_info.begin(), contents_info.end(), [](const ContentInfo &c) {
+            const auto content_index = std::ranges::find_if(contents_info, [](const ContentInfo &c) {
                 return c.category == "gd";
             });
             if (content_index != contents_info.end() && content_index->state)
