@@ -1,8 +1,8 @@
 #!/bin/zsh
 # points.sh <run name> [config_key=value ...]: judges one build on every point the player reached (saves/player,
-# filled by harvest.sh) and on every chapter sweep (scenarios/*-chapters.txt), then sums up their verdicts in
+# refreshed by harvest.sh first) and on every chapter sweep (scenarios/*-chapters.txt), then sums up their verdicts in
 # runs/<run name>/verdict.txt. A point loads its save through the game's own menus (scenarios/continue-<ID>.txt),
-# then explores and measures. Runs on the player's installation, which has every game; same variables as run.sh.
+# then plays about 5 min. Runs on the player's installation, which has every game; same variables as run.sh.
 #   ONLY=<ID>  that game only    QUICK=1  no chapter sweeps    TARGET  default 60    HOLD=1  keep the lock
 A=~/Library/Android/sdk/platform-tools/adb
 D=${0:A:h}
@@ -11,6 +11,8 @@ OWNER=${LOCK_OWNER:-vita3k} SERIES=$HOLD
 export PREF=${PREF:-/storage/FBDD-1F17/Emulations/vita3k} TARGET=${TARGET:-60} HOLD=1
 $D/lock.sh take $OWNER || exit 1
 trap '[ "$SERIES" = 1 ] || $D/lock.sh release $OWNER' EXIT
+# Picks up the points the player reached since the last series
+$D/harvest.sh
 mkdir -p $D/runs/$NAME; V=$D/runs/$NAME/verdict.txt; : > $V
 judge() {
   local S=$D/runs/$NAME/$2/summary.txt
