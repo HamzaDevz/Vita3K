@@ -64,7 +64,7 @@ shot() {
   $A exec-out screencap -d $SCREEN -p > $OUT/$1.png && sips -Z 960 $OUT/$1.png --out $OUT/$1.png >/dev/null || return
   local ref=$D/refs/${SC:t:r}/$1.png
   [ -f $ref ] && python3 -I $D/imgdiff.py $ref $OUT/$1.png | tee -a $OUT/summary.txt
-  python3 -I $D/glitch.py $OUT/$1.png | grep BLACK | tee -a $OUT/summary.txt
+  python3 -I $D/glitch.py $OUT/$1.png | grep -E 'BLACK BLOCKS|CORRUPT COLORS' | tee -a $OUT/summary.txt
 }
 # A guest thread stuck on a fault logs gigabytes: keep only both ends of a huge log. Each boot starts a new log.
 save_log() {
@@ -182,5 +182,5 @@ focused || echo "WARNING: Vita3K no longer has the focus (crash?)" | tee -a $OUT
 save_log $([ $BOOTS = 0 ] || echo -$BOOTS)
 S=$OUT/summary.txt
 echo "verdict: $(grep -c 'BELOW TARGET' $S)/$(grep -c '^\[' $S) segments below target," \
-  "$(grep -cE 'BLACK BLOCKS|BROKEN RENDER' $S)/$(wc -l < $OUT/shots.txt 2>/dev/null | tr -d ' ') shots broken," \
+  "$(grep -cE 'BLACK BLOCKS|CORRUPT COLORS|BROKEN RENDER' $S)/$(wc -l < $OUT/shots.txt 2>/dev/null | tr -d ' ') shots broken," \
   "$(grep -c '^CRASH' $S) crashes" | tee -a $S

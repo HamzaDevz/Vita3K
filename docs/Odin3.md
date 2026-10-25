@@ -31,7 +31,7 @@ dont la configuration est rendue à la fin. Variables : `TARGET=60`, `COLD=1` (c
 (garder le verrou pour une série), `LOCK_OWNER`, `PROFILE=<segment>:<s>` (simpleperf sur ce segment, dans un run
 à part, vers `profile.txt`).
 
-Chaque `shot`, référence ou non, est aussi fouillé pour des blocs noirs (`glitch.py`) : `BLACK BLOCKS`. Un segment
+Chaque `shot`, référence ou non, est aussi fouillé (`glitch.py`) : blocs noirs, même rongeant l'image depuis un bord (`BLACK BLOCKS`), et aplats vert ou bleu fluo (`CORRUPT COLORS`). Un segment
 sous 95 % de `TARGET` ou avec plus de 2 % de trames lentes est `BELOW TARGET`. La dernière ligne, `verdict`, compte
 segments sous l'objectif, captures cassées et plantages. Une ligne `boot` relance le jeu : un parcours enchaîne ainsi
 tout un jeu chapitre par chapitre, et un plantage n'y coûte que son chapitre (un log par boot). Une ligne
