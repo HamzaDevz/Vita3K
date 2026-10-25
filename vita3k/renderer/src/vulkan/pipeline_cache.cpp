@@ -31,6 +31,8 @@
 
 #include <SDL3/SDL_cpuinfo.h>
 
+#include <span>
+
 // don't use the dispatch version, because we always hash a small amount
 // with a known size
 #define XXH_INLINE_ALL
@@ -40,6 +42,9 @@ namespace renderer::vulkan {
 
 // Size of the record containing what is needed for the pipeline construction (what is after is dynamic state)
 constexpr size_t record_pipeline_len = offsetof(GxmRecordState, vertex_streams);
+
+// stored in place of a pipeline the driver failed to create, so that it is not attempted again on every draw
+static const vk::Pipeline pipeline_failed = std::bit_cast<vk::Pipeline, uint64_t>(~1ULL);
 
 // structure containing everything needed to compile a pipeline
 struct CompileRequest {
@@ -379,7 +384,8 @@ void PipelineCache::cleanup() {
         set_async_compilation(false);
 
     for (auto &[hash, pipeline] : pipelines)
-        state.device.destroy(pipeline);
+        if (pipeline != pipeline_failed)
+            state.device.destroy(pipeline);
     pipelines.clear();
 
     {
@@ -807,7 +813,7 @@ void PipelineCache::compiler_thread(MemState &mem) {
             break;
 
         vk::Pipeline pipeline = compile_pipeline(request->type, request->render_pass, *request->vertex_program_gxm, *request->fragment_program_gxm, *request->get_record(), request->hints, mem);
-        *request->pipeline = pipeline;
+        *request->pipeline = pipeline ? pipeline : pipeline_failed;
 
         request->vertex_program_gxm->compile_threads_on.fetch_sub(1, std::memory_order_release);
         request->fragment_program_gxm->compile_threads_on.fetch_sub(1, std::memory_order_release);
@@ -934,13 +940,25 @@ vk::Pipeline PipelineCache::compile_pipeline(SceGxmPrimitiveType type, vk::Rende
         .subpass = 0
     };
 
-    const auto result = state.device.createGraphicsPipeline(pipeline_cache, pipeline_info);
-    if (result.result != vk::Result::eSuccess) {
-        LOG_CRITICAL("Failed to create pipeline.");
-        return nullptr;
+    // A driver can fail to create a pipeline (ErrorUnknown on the stock Adreno driver): this must not throw out of
+    // a compile thread and kill the game. Retry once without the pipeline cache, then skip the draws using it.
+    for (const vk::PipelineCache cache : { pipeline_cache, vk::PipelineCache() }) {
+        try {
+            return state.device.createGraphicsPipeline(cache, pipeline_info).value;
+        } catch (const vk::SystemError &e) {
+            std::string inputs;
+            for (const auto &attr : std::span(vertex_input.pVertexAttributeDescriptions, vertex_input.vertexAttributeDescriptionCount))
+                inputs += fmt::format(" loc{}:b{}+{}:{}", attr.location, attr.binding, attr.offset, vk::to_string(attr.format));
+            for (const auto &binding : std::span(vertex_input.pVertexBindingDescriptions, vertex_input.vertexBindingDescriptionCount))
+                inputs += fmt::format(" b{}:stride{}{}", binding.binding, binding.stride, binding.inputRate == vk::VertexInputRate::eInstance ? ":inst" : "");
+            LOG_ERROR("Failed to create pipeline{}: {} (vert {}, frag {}, {} stages, {}, interlock {}, blend {:#x}/{:#x}, inputs{})",
+                cache ? "" : " without the pipeline cache", e.what(), hex_string(vertex_program.hash), hex_string(fragment_program.hash),
+                shader_stage_count, vk::to_string(input_assembly.topology), use_shader_interlock,
+                static_cast<uint32_t>(color_blending.pAttachments->blendEnable), static_cast<uint32_t>(color_blending.pAttachments->colorWriteMask), inputs);
+        }
     }
 
-    return result.value;
+    return nullptr;
 }
 
 vk::Pipeline PipelineCache::retrieve_pipeline(VKContext &context, SceGxmPrimitiveType &type, bool consider_for_async, MemState &mem) {
@@ -969,8 +987,8 @@ vk::Pipeline PipelineCache::retrieve_pipeline(VKContext &context, SceGxmPrimitiv
     auto it = pipelines.find(key);
     if (it != pipelines.end()) {
         if (it->second != nullptr) {
-            if (it->second == pipeline_compiling)
-                // pipeline is still compiling
+            if (it->second == pipeline_compiling || it->second == pipeline_failed)
+                // pipeline is still compiling or could not be created
                 return nullptr;
             else
                 return it->second;
@@ -1023,7 +1041,7 @@ vk::Pipeline PipelineCache::retrieve_pipeline(VKContext &context, SceGxmPrimitiv
         if (!already_in_cache)
             state.shaders_count_compiled++;
 
-        it->second = result;
+        it->second = result ? result : pipeline_failed;
 
         return result;
     }
