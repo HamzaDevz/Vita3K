@@ -403,6 +403,17 @@ static void create_fragment_inputs(spv::Builder &b, SpirvShaderParameters &param
     translation_state.interfaces.push_back(current_coord);
     translation_state.frag_coord_id = current_coord;
 
+    // the sprite coordinate is the point coordinate, no vertex shader writes it
+    spv::Id point_coord = spv::NoResult;
+    const auto get_point_coord = [&]() {
+        if (point_coord == spv::NoResult) {
+            point_coord = b.createVariable(spv::NoPrecision, spv::StorageClassInput, b.makeVectorType(f32, 2), "gl_PointCoord");
+            b.addDecoration(point_coord, spv::DecorationBuiltIn, spv::BuiltInPointCoord);
+            translation_state.interfaces.push_back(point_coord);
+        }
+        return point_coord;
+    };
+
     // It may actually be total fragments input
     for (size_t i = 0; i < vertex_varyings_ptr->varyings_count; i++, descriptor++) {
         // 4 bit flag indicates a PA!
@@ -462,6 +473,10 @@ static void create_fragment_inputs(spv::Builder &b, SpirvShaderParameters &param
                 res_multiplier = b.createCompositeConstruct(v4, { res_multiplier, res_multiplier, one, one });
 
                 pa_iter_var = b.createBinOp(spv::OpFDiv, v4, pa_iter_var, res_multiplier);
+            } else if (input_id & 0x40000000) {
+                // reading a varying the vertex shader does not write makes the stock Adreno driver fail the pipeline
+                const spv::Id coord = b.createLoad(get_point_coord(), spv::NoPrecision);
+                pa_iter_var = b.createCompositeConstruct(v4, { coord, b.makeFloatConstant(0.0f), b.makeFloatConstant(1.0f) });
             } else {
                 spv::Decoration precision = get_data_type_size(pa_dtype) < 4 ? spv::DecorationRelaxedPrecision : spv::NoPrecision;
                 pa_iter_var = b.createVariable(precision, spv::StorageClassInput, pa_iter_type, pa_name.c_str());
@@ -656,23 +671,15 @@ static void create_fragment_inputs(spv::Builder &b, SpirvShaderParameters &param
         if (coords[query_info.coord_index].first == spv::NoResult) {
             // Create an 'in' variable
             // TODO: this really right?
-            std::string coord_name = "v_TexCoord";
-
             if (query_info.coord_index == 10) {
-                coord_name = "gl_PointCoord";
+                coords[query_info.coord_index].first = get_point_coord();
             } else {
-                coord_name += std::to_string(query_info.coord_index);
-            }
-
-            coords[query_info.coord_index].first = b.createVariable(spv::NoPrecision, spv::StorageClassInput,
-                b.makeVectorType(b.makeFloatType(32), /*tex_coord_comp_count*/ query_info.coord_index == 10 ? 2 : 4), coord_name.c_str());
-
-            if (query_info.coord_index == 10)
-                b.addDecoration(coords[query_info.coord_index].first, spv::DecorationBuiltIn, spv::BuiltInPointCoord);
-            else
+                const std::string coord_name = "v_TexCoord" + std::to_string(query_info.coord_index);
+                coords[query_info.coord_index].first = b.createVariable(spv::NoPrecision, spv::StorageClassInput,
+                    b.makeVectorType(b.makeFloatType(32), 4), coord_name.c_str());
                 b.addDecoration(coords[query_info.coord_index].first, spv::DecorationLocation, TEXCOORD_BASE_LOCATION + query_info.coord_index);
-
-            translation_state.interfaces.push_back(coords[query_info.coord_index].first);
+                translation_state.interfaces.push_back(coords[query_info.coord_index].first);
+            }
 
             coords[query_info.coord_index].second = static_cast<int>(DataType::F32);
         }
