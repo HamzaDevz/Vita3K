@@ -3,7 +3,8 @@
 # and writes the measured segments to runs/<run name>/.
 #   PKG       Vita3K package (default: this branch's debuggable build)
 #   SCENARIO  scenarios/<SCENARIO>.txt (default uncharted-intro); its `title` and `save` lines pick the game
-#             and the save restored before booting, a `patch` line a game patch from patches/ (Vita3K format)
+#             and the save restored before booting, a `patch` line a game patch from patches/ (Vita3K format);
+#             TITLE=<ID> and SAVE=<dir of saves/> override them
 #   TARGET    frame rate the game aims for, for the slow-frame count (default 30)
 #   KEEP=1    leave the game running at the end
 #   COLD=1    start from an empty shader and pipeline cache (first play)
@@ -29,7 +30,7 @@ V=${PREF:-/storage/emulated/0/vita3k-bench/vita}
 T=/data/local/tmp/vita3k
 [ -f $SC ] || { echo "no scenario $SC"; exit 2; }
 TITLE=${TITLE:-$(sed -n 's/^title \([^ #]*\).*/\1/p' $SC)}
-SAVE=$(sed -n 's/^save \([^ #]*\).*/\1/p' $SC)
+SAVE=${SAVE:-$(sed -n 's/^save \([^ #]*\).*/\1/p' $SC)}
 PATCH=$(sed -n 's/^patch \([^ #]*\).*/\1/p' $SC)
 rm -rf $OUT; mkdir -p $OUT $D/base/$PKG || exit 1
 

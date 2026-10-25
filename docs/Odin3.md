@@ -37,6 +37,13 @@ segments sous l'objectif, captures cassées et plantages. Une ligne `boot` relan
 tout un jeu chapitre par chapitre, et un plantage n'y coûte que son chapitre (un log par boot). Une ligne
 `suspend <s>` met la console en veille <s> secondes puis la réveille, comme un joueur entre deux sessions.
 
+Tous les points de tous les jeux : `harvest.sh` copie chaque sauvegarde des vraies parties du joueur (carte SD) dans
+`saves/player/<ID>/<date>`, une fois par sauvegarde distincte, sans rien lancer ; le relancer après chaque session de
+jeu. `points.sh <nom> [clé=valeur ...]` rejoue sur une build chacun de ces points (le jeu charge la sauvegarde par ses
+menus, `scenarios/continue-<ID>.txt`, puis le personnage reste, marche et regarde autour de lui pendant les mesures)
+et chaque parcours `scenarios/*-chapters.txt`, sur l'installation du joueur, à 60 fps visés, puis écrit un verdict
+par point dans `runs/<nom>/verdict.txt`. Un jeu sans route `continue-<ID>` y est signalé : l'écrire.
+
 Le prologue seul ne juge rien : Uncharted y était juste et montrait des carrés noirs plus loin. Un changement de rendu
 ou de perf se juge sur le parcours complet du jeu (`uncharted-chapters`), pas sur un seul passage.
 

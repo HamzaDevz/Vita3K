@@ -1,0 +1,27 @@
+# Uncharted: Golden Abyss 1.03 (PCSF00012): loads the player's save (points.sh), then explores
+title PCSF00012
+wait 45
+shot title
+tap 960 600   # Touchez pour commencer
+wait 4
+tap 960 650   # Continuer
+wait 4
+tap 1240 864  # Oui
+wait 30
+shot loaded
+measure stand
+wait 20
+end
+shot stand
+measure walk
+repeat 3 stick 0 -32767 5000
+rstick 32767 0 1500
+repeat 3 stick 0 -32767 5000
+rstick -32767 0 3000
+repeat 3 stick 0 32767 5000
+end
+shot walked
+measure look
+repeat 8 rstick 32767 0 1500
+end
+shot looked
