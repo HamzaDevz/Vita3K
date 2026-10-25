@@ -28,6 +28,8 @@ F=/storage/emulated/0/Android/data/$PKG/files
 # PREF=<dir> runs on another installation, such as the player's on the SD card
 V=${PREF:-/storage/emulated/0/vita3k-bench/vita}
 T=/data/local/tmp/vita3k
+# With a TV plugged in, screencap needs the console's own screen
+SCREEN=$($A shell dumpsys SurfaceFlinger --display-id | sed -n 's/^Display \([0-9]*\) (HWC display 0).*/\1/p')
 [ -f $SC ] || { echo "no scenario $SC"; exit 2; }
 TITLE=${TITLE:-$(sed -n 's/^title \([^ #]*\).*/\1/p' $SC)}
 SAVE=${SAVE:-$(sed -n 's/^save \([^ #]*\).*/\1/p' $SC)}
@@ -59,7 +61,7 @@ pad() { need_focus && $A shell sh $T/pad.sh "$@"; }
 shot() {
   # The device clock, to match a shot with the lines of vita3k.log
   print "$1 $($A shell date +%T.%N | cut -c1-12)" >> $OUT/shots.txt
-  $A exec-out screencap -p > $OUT/$1.png && sips -Z 960 $OUT/$1.png --out $OUT/$1.png >/dev/null || return
+  $A exec-out screencap -d $SCREEN -p > $OUT/$1.png && sips -Z 960 $OUT/$1.png --out $OUT/$1.png >/dev/null || return
   local ref=$D/refs/${SC:t:r}/$1.png
   [ -f $ref ] && python3 -I $D/imgdiff.py $ref $OUT/$1.png | tee -a $OUT/summary.txt
   python3 -I $D/glitch.py $OUT/$1.png | grep BLACK | tee -a $OUT/summary.txt
