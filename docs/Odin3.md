@@ -31,6 +31,14 @@ dont la configuration est rendue à la fin. Variables : `TARGET=60`, `COLD=1` (c
 (garder le verrou pour une série), `LOCK_OWNER`, `PROFILE=<segment>:<s>` (simpleperf sur ce segment, dans un run
 à part, vers `profile.txt`).
 
+Chaque `shot`, référence ou non, est aussi fouillé pour des blocs noirs (`glitch.py`) : `BLACK BLOCKS`. Un segment
+sous 95 % de `TARGET` ou avec plus de 2 % de trames lentes est `BELOW TARGET`. La dernière ligne, `verdict`, compte
+segments sous l'objectif, captures cassées et plantages. Une ligne `boot` relance le jeu : un parcours enchaîne ainsi
+tout un jeu chapitre par chapitre, et un plantage n'y coûte que son chapitre (un log par boot).
+
+Le prologue seul ne juge rien : Uncharted y était juste et montrait des carrés noirs plus loin. Un changement de rendu
+ou de perf se juge sur le parcours complet du jeu (`uncharted-chapters`), pas sur un seul passage.
+
 Ne jamais faire de capture pendant une mesure (SurfaceFlinger cale). Classer le goulot avant d'optimiser : thread
 invité, thread de rendu (`SDLThread`), GPU, compilation de shaders ou synchronisation.
 

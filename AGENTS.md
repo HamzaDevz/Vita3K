@@ -12,7 +12,10 @@ v1.03. Notes en français, code et commentaires en anglais comme upstream. Les l
   `tools/odin3/lock.sh take <owner>` ; le rendre dès la série finie, ne jamais supprimer le verrou d'un autre.
   Ne jamais forcer l'arrêt d'un paquet Eden.
 - Les fps ne suffisent pas : Uncharted tournait à 30 fps stables en x2 avec une image détruite. Un `shot` qui a
-  une référence dans `tools/odin3/refs/<scénario>/` juge l'image (`BROKEN RENDER` au-delà de 10 % d'écart).
+  une référence dans `tools/odin3/refs/<scénario>/` juge l'image (`BROKEN RENDER` au-delà de 10 % d'écart) ; tout
+  `shot` est fouillé pour des blocs noirs (`BLACK BLOCKS`).
+- Un seul passage ne juge pas un jeu : le prologue d'Uncharted était juste, la suite pleine de carrés noirs. Juger
+  sur le parcours de tout le jeu (`SCENARIO=uncharted-chapters`, objectif 60 fps, ligne `verdict` du résumé).
 - Une session parallèle (autre jeu) travaille dans son propre worktree, avec son verrou (`LOCK_OWNER=<nom>`) et
   son paquet (`-PbenchSuffix=.<nom>` à la build, `PKG=org.vita3k.emulator.odin3.debug.<nom>` au banc).
 - Une optimisation vaut pour tous les jeux : pas de condition par titre.

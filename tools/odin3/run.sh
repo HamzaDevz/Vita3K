@@ -12,8 +12,9 @@
 #   PROFILE=<segment>:<s>  simpleperf samples the process for <s> seconds from the start of that segment
 #             (its numbers are skewed by the sampling: profile in a run of its own) into runs/<name>/profile.txt
 # Scenario lines: title <ID> | save <name> | patch <name> | wait <s> | btn <name> [ms] | stick|rstick <x> <y> <ms> |
-#   tap <x> <y> | repeat <n> <line> | shot <name> | measure <label> ... end
-#   (inputs between measure and end run while measuring)
+#   tap <x> <y> | swipe <x1> <y1> <x2> <y2> <ms> | repeat <n> <line> | shot <name> | measure <label> ... end |
+#   boot (restart the game, to sweep a game chapter by chapter) (inputs between measure and end run while measuring)
+# Every shot is checked for black blocks; segments under 95% of TARGET fps are marked BELOW TARGET
 A=~/Library/Android/sdk/platform-tools/adb
 D=${0:A:h}
 NAME=$1; shift
@@ -44,7 +45,14 @@ PUT_ASIDE=()
 put_aside() { PUT_ASIDE+=($1); $A shell "[ -e $1.player ] || { [ -e $1 ] && mv $1 $1.player; }; rm -rf $1"; }
 
 focused() { $A shell dumpsys window | grep mCurrentFocus | grep -q "$PKG/org.vita3k.emulator.Emulator"; }
-pad() { focused || { echo "ABORT: Vita3K lost the focus" | tee -a $OUT/summary.txt; exit 1; }; $A shell sh $T/pad.sh "$@"; }
+# A crash aborts the run, except in a sweep (a scenario with boot lines): it skips to the next boot
+need_focus() {
+  focused && return
+  grep -q '^boot' $SC || { echo "ABORT: Vita3K lost the focus" | tee -a $OUT/summary.txt; exit 1; }
+  echo "CRASH: Vita3K lost the focus after boot $BOOTS, skipping to the next boot" | tee -a $OUT/summary.txt
+  SKIP=1; return 1
+}
+pad() { need_focus && $A shell sh $T/pad.sh "$@"; }
 # A shot with a reference in refs/<scenario>/ (a correct native-resolution render) also judges the picture
 shot() {
   # The device clock, to match a shot with the lines of vita3k.log
@@ -52,6 +60,29 @@ shot() {
   $A exec-out screencap -p > $OUT/$1.png && sips -Z 960 $OUT/$1.png --out $OUT/$1.png >/dev/null || return
   local ref=$D/refs/${SC:t:r}/$1.png
   [ -f $ref ] && python3 -I $D/imgdiff.py $ref $OUT/$1.png | tee -a $OUT/summary.txt
+  python3 -I $D/glitch.py $OUT/$1.png | grep BLACK | tee -a $OUT/summary.txt
+}
+# A guest thread stuck on a fault logs gigabytes: keep only both ends of a huge log. Each boot starts a new log.
+save_log() {
+  local SZ=$($A shell stat -c %s $F/vita3k.log 2>/dev/null | tr -d '\r') L=$OUT/vita3k$1.log
+  if [ "${SZ:-0}" -gt 33554432 ]; then
+    { $A exec-out head -c 8388608 $F/vita3k.log; print "\n[run.sh: $SZ bytes, middle cut]"
+      $A exec-out tail -c 8388608 $F/vita3k.log; } > $L
+    $A shell rm -f $F/vita3k.log
+  else
+    $A pull $F/vita3k.log $L >/dev/null 2>&1
+  fi
+  local E=$(grep -c '|E|' $L 2>/dev/null) W=$(grep -c '|W|' $L 2>/dev/null)
+  echo "log$1: ${E:-0} errors, ${W:-0} warnings; top: $(grep '|E|' $L 2>/dev/null |
+    sed 's/^\[[^]]*\] |E| //' | cut -c1-60 | sort | uniq -c | sort -rn | head -3 | awk '{$1=$1};1' | paste -sd';' -)" |
+    tee -a $OUT/summary.txt
+}
+BOOTS=0
+launch() {
+  $A shell am force-stop $PKG
+  $A shell am start -n $PKG/org.vita3k.emulator.Emulator --es title_id $TITLE >/dev/null
+  for i in $(seq 60); do focused && return; sleep 1; done
+  echo "ABORT: the Emulator activity never got the focus" | tee -a $OUT/summary.txt; exit 1
 }
 
 $A shell mkdir -p $T
@@ -81,9 +112,7 @@ if [ -n "$PATCH" ]; then
 fi
 $A shell input keyevent KEYCODE_WAKEUP; $A shell wm dismiss-keyguard
 $A logcat -c
-$A shell am start -n $PKG/org.vita3k.emulator.Emulator --es title_id $TITLE >/dev/null
-for i in $(seq 60); do focused && break; sleep 1; done
-focused || { echo "ABORT: the Emulator activity never got the focus" | tee $OUT/summary.txt; exit 1; }
+launch
 echo "pkg=$PKG title=$TITLE scenario=${SC:t} edits=$* start=$(date +%T)" > $OUT/context.txt
 
 # The Emulator activity has two BLAST SurfaceViews and only one of them gets the game's frames
@@ -116,13 +145,18 @@ seg_end() {
   SEG=""
 }
 step() {
+  if [ "$SKIP" = 1 ]; then
+    [ "$1" = end ] && [ -n "$SEG" ] && seg_end
+    [ "$1" = boot ] || return
+  fi
   case $1 in
     title|save|patch|""|\#*) ;;
     wait) sleep $2;;
     btn|stick|rstick) pad "$@";;
     # A short tap is not seen by the games: hold the finger 250 ms (screen pixels, 1920x1080 landscape)
-    tap) focused || { echo "ABORT: Vita3K lost the focus" | tee -a $OUT/summary.txt; exit 1; }
-      $A shell input swipe $2 $3 $2 $3 250;;
+    tap) need_focus && $A shell input swipe $2 $3 $2 $3 250;;
+    swipe) need_focus && $A shell input swipe $2 $3 $4 $5 $6;;
+    boot) [ "$SKIP" = 1 ] || need_focus; save_log -$BOOTS; BOOTS=$((BOOTS + 1)); SKIP=0; LAYER=""; launch;;
     repeat) local n=$2; shift 2; for i in $(seq $n); do step "$@"; done;;
     shot) [ -z "$SEG" ] || { echo "a screenshot during a measure stalls SurfaceFlinger" >&2; exit 2; }; shot $2;;
     measure) seg_begin $2;;
@@ -136,17 +170,9 @@ for line in "${(@f)$(<$SC)}"; do step ${=line%%\#*}; done
 
 [ -z "$PROFILE" ] || $A shell "simpleperf report -i $T/perf.data --sort comm,symbol --percent-limit 0.3" \
   2>/dev/null | tr -d '\r' | head -n 120 > $OUT/profile.txt
-# A guest thread stuck on a fault logs gigabytes: keep only both ends of a huge log
-SZ=$($A shell stat -c %s $F/vita3k.log 2>/dev/null | tr -d '\r')
-if [ "${SZ:-0}" -gt 33554432 ]; then
-  { $A exec-out head -c 8388608 $F/vita3k.log; print "\n[run.sh: $SZ bytes, middle cut]"
-    $A exec-out tail -c 8388608 $F/vita3k.log; } > $OUT/vita3k.log
-  $A shell rm -f $F/vita3k.log
-else
-  $A pull $F/vita3k.log $OUT/vita3k.log >/dev/null 2>&1
-fi
-E=$(grep -c '|E|' $OUT/vita3k.log 2>/dev/null); W=$(grep -c '|W|' $OUT/vita3k.log 2>/dev/null)
-echo "log: ${E:-0} errors, ${W:-0} warnings; top: $(grep '|E|' $OUT/vita3k.log 2>/dev/null |
-  sed 's/^\[[^]]*\] |E| //' | cut -c1-60 | sort | uniq -c | sort -rn | head -3 | awk '{$1=$1};1' | paste -sd';' -)" |
-  tee -a $OUT/summary.txt
 focused || echo "WARNING: Vita3K no longer has the focus (crash?)" | tee -a $OUT/summary.txt
+save_log $([ $BOOTS = 0 ] || echo -$BOOTS)
+S=$OUT/summary.txt
+echo "verdict: $(grep -c 'BELOW TARGET' $S)/$(grep -c '^\[' $S) segments below target," \
+  "$(grep -cE 'BLACK BLOCKS|BROKEN RENDER' $S)/$(wc -l < $OUT/shots.txt 2>/dev/null | tr -d ' ') shots broken," \
+  "$(grep -c '^CRASH' $S) crashes" | tee -a $S

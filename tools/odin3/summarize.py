@@ -37,9 +37,11 @@ def frame_stats(ts):
     budget = 1000 / target
     slow = sum(1 for g in gaps if g > budget * 1.5)
     worst = sorted(gaps)[-max(1, len(gaps) // 100):]
+    # The goal is the target held: a lower average or more than 2% of hitches both fail it
+    below = fps < target * 0.95 or slow > len(gaps) * 0.02
     return (f"fps {fps:.1f} (target {target:.0f}), slow frames {100 * slow / len(gaps):.1f}% "
             f"(>{budget * 1.5:.0f} ms), 1% worst {statistics.mean(worst):.0f} ms, "
-            f"median {statistics.median(gaps):.1f} ms over {span:.0f} s")
+            f"median {statistics.median(gaps):.1f} ms over {span:.0f} s" + (" BELOW TARGET" if below else ""))
 
 
 def power():

@@ -1,0 +1,878 @@
+# Uncharted: Golden Abyss 1.03: the whole game, prologue and 34 chapters, each from the chapter select of a completed
+# save (save uncharted-chapters, Apollo EU 100%). Each chapter gets a fresh boot, its opening (often a real-time
+# cutscene) measured untouched, then a walk; three shots per chapter. About 90 minutes: TARGET=60 with fps-hack=true.
+title PCSF00012
+save uncharted-chapters
+# chapter 0
+wait 40
+tap 960 600                     # Touchez pour commencer
+wait 3
+swipe 1400 700 700 700 450      # main menu: Continuer -> Chapitres
+tap 960 700
+wait 3
+tap 960 450                     # the chapter picture
+wait 2
+tap 1240 770                    # Oui
+wait 20
+shot ch00-1
+measure ch00-a                  # opening, untouched
+wait 25
+end
+shot ch00-2
+measure ch00-b                  # walk and look around
+repeat 3 stick 0 -32767 5000
+rstick 32767 0 1500
+repeat 2 stick 0 -32767 5000
+rstick -32767 0 3000
+end
+shot ch00-3
+boot
+# chapter 1
+wait 40
+tap 960 600                     # Touchez pour commencer
+wait 3
+swipe 1400 700 700 700 450      # main menu: Continuer -> Chapitres
+tap 960 700
+wait 3
+repeat 1 swipe 1100 450 980 450 700
+tap 960 450                     # the chapter picture
+wait 2
+tap 1240 770                    # Oui
+wait 20
+shot ch01-1
+measure ch01-a                  # opening, untouched
+wait 25
+end
+shot ch01-2
+measure ch01-b                  # walk and look around
+repeat 3 stick 0 -32767 5000
+rstick 32767 0 1500
+repeat 2 stick 0 -32767 5000
+rstick -32767 0 3000
+end
+shot ch01-3
+boot
+# chapter 2
+wait 40
+tap 960 600                     # Touchez pour commencer
+wait 3
+swipe 1400 700 700 700 450      # main menu: Continuer -> Chapitres
+tap 960 700
+wait 3
+repeat 2 swipe 1100 450 980 450 700
+tap 960 450                     # the chapter picture
+wait 2
+tap 1240 770                    # Oui
+wait 20
+shot ch02-1
+measure ch02-a                  # opening, untouched
+wait 25
+end
+shot ch02-2
+measure ch02-b                  # walk and look around
+repeat 3 stick 0 -32767 5000
+rstick 32767 0 1500
+repeat 2 stick 0 -32767 5000
+rstick -32767 0 3000
+end
+shot ch02-3
+boot
+# chapter 3
+wait 40
+tap 960 600                     # Touchez pour commencer
+wait 3
+swipe 1400 700 700 700 450      # main menu: Continuer -> Chapitres
+tap 960 700
+wait 3
+repeat 3 swipe 1100 450 980 450 700
+tap 960 450                     # the chapter picture
+wait 2
+tap 1240 770                    # Oui
+wait 20
+shot ch03-1
+measure ch03-a                  # opening, untouched
+wait 25
+end
+shot ch03-2
+measure ch03-b                  # walk and look around
+repeat 3 stick 0 -32767 5000
+rstick 32767 0 1500
+repeat 2 stick 0 -32767 5000
+rstick -32767 0 3000
+end
+shot ch03-3
+boot
+# chapter 4
+wait 40
+tap 960 600                     # Touchez pour commencer
+wait 3
+swipe 1400 700 700 700 450      # main menu: Continuer -> Chapitres
+tap 960 700
+wait 3
+repeat 4 swipe 1100 450 980 450 700
+tap 960 450                     # the chapter picture
+wait 2
+tap 1240 770                    # Oui
+wait 20
+shot ch04-1
+measure ch04-a                  # opening, untouched
+wait 25
+end
+shot ch04-2
+measure ch04-b                  # walk and look around
+repeat 3 stick 0 -32767 5000
+rstick 32767 0 1500
+repeat 2 stick 0 -32767 5000
+rstick -32767 0 3000
+end
+shot ch04-3
+boot
+# chapter 5
+wait 40
+tap 960 600                     # Touchez pour commencer
+wait 3
+swipe 1400 700 700 700 450      # main menu: Continuer -> Chapitres
+tap 960 700
+wait 3
+repeat 5 swipe 1100 450 980 450 700
+tap 960 450                     # the chapter picture
+wait 2
+tap 1240 770                    # Oui
+wait 20
+shot ch05-1
+measure ch05-a                  # opening, untouched
+wait 25
+end
+shot ch05-2
+measure ch05-b                  # walk and look around
+repeat 3 stick 0 -32767 5000
+rstick 32767 0 1500
+repeat 2 stick 0 -32767 5000
+rstick -32767 0 3000
+end
+shot ch05-3
+boot
+# chapter 6
+wait 40
+tap 960 600                     # Touchez pour commencer
+wait 3
+swipe 1400 700 700 700 450      # main menu: Continuer -> Chapitres
+tap 960 700
+wait 3
+repeat 6 swipe 1100 450 980 450 700
+tap 960 450                     # the chapter picture
+wait 2
+tap 1240 770                    # Oui
+wait 20
+shot ch06-1
+measure ch06-a                  # opening, untouched
+wait 25
+end
+shot ch06-2
+measure ch06-b                  # walk and look around
+repeat 3 stick 0 -32767 5000
+rstick 32767 0 1500
+repeat 2 stick 0 -32767 5000
+rstick -32767 0 3000
+end
+shot ch06-3
+boot
+# chapter 7
+wait 40
+tap 960 600                     # Touchez pour commencer
+wait 3
+swipe 1400 700 700 700 450      # main menu: Continuer -> Chapitres
+tap 960 700
+wait 3
+repeat 7 swipe 1100 450 980 450 700
+tap 960 450                     # the chapter picture
+wait 2
+tap 1240 770                    # Oui
+wait 20
+shot ch07-1
+measure ch07-a                  # opening, untouched
+wait 25
+end
+shot ch07-2
+measure ch07-b                  # walk and look around
+repeat 3 stick 0 -32767 5000
+rstick 32767 0 1500
+repeat 2 stick 0 -32767 5000
+rstick -32767 0 3000
+end
+shot ch07-3
+boot
+# chapter 8
+wait 40
+tap 960 600                     # Touchez pour commencer
+wait 3
+swipe 1400 700 700 700 450      # main menu: Continuer -> Chapitres
+tap 960 700
+wait 3
+repeat 8 swipe 1100 450 980 450 700
+tap 960 450                     # the chapter picture
+wait 2
+tap 1240 770                    # Oui
+wait 20
+shot ch08-1
+measure ch08-a                  # opening, untouched
+wait 25
+end
+shot ch08-2
+measure ch08-b                  # walk and look around
+repeat 3 stick 0 -32767 5000
+rstick 32767 0 1500
+repeat 2 stick 0 -32767 5000
+rstick -32767 0 3000
+end
+shot ch08-3
+boot
+# chapter 9
+wait 40
+tap 960 600                     # Touchez pour commencer
+wait 3
+swipe 1400 700 700 700 450      # main menu: Continuer -> Chapitres
+tap 960 700
+wait 3
+repeat 9 swipe 1100 450 980 450 700
+tap 960 450                     # the chapter picture
+wait 2
+tap 1240 770                    # Oui
+wait 20
+shot ch09-1
+measure ch09-a                  # opening, untouched
+wait 25
+end
+shot ch09-2
+measure ch09-b                  # walk and look around
+repeat 3 stick 0 -32767 5000
+rstick 32767 0 1500
+repeat 2 stick 0 -32767 5000
+rstick -32767 0 3000
+end
+shot ch09-3
+boot
+# chapter 10
+wait 40
+tap 960 600                     # Touchez pour commencer
+wait 3
+swipe 1400 700 700 700 450      # main menu: Continuer -> Chapitres
+tap 960 700
+wait 3
+repeat 10 swipe 1100 450 980 450 700
+tap 960 450                     # the chapter picture
+wait 2
+tap 1240 770                    # Oui
+wait 20
+shot ch10-1
+measure ch10-a                  # opening, untouched
+wait 25
+end
+shot ch10-2
+measure ch10-b                  # walk and look around
+repeat 3 stick 0 -32767 5000
+rstick 32767 0 1500
+repeat 2 stick 0 -32767 5000
+rstick -32767 0 3000
+end
+shot ch10-3
+boot
+# chapter 11
+wait 40
+tap 960 600                     # Touchez pour commencer
+wait 3
+swipe 1400 700 700 700 450      # main menu: Continuer -> Chapitres
+tap 960 700
+wait 3
+repeat 11 swipe 1100 450 980 450 700
+tap 960 450                     # the chapter picture
+wait 2
+tap 1240 770                    # Oui
+wait 20
+shot ch11-1
+measure ch11-a                  # opening, untouched
+wait 25
+end
+shot ch11-2
+measure ch11-b                  # walk and look around
+repeat 3 stick 0 -32767 5000
+rstick 32767 0 1500
+repeat 2 stick 0 -32767 5000
+rstick -32767 0 3000
+end
+shot ch11-3
+boot
+# chapter 12
+wait 40
+tap 960 600                     # Touchez pour commencer
+wait 3
+swipe 1400 700 700 700 450      # main menu: Continuer -> Chapitres
+tap 960 700
+wait 3
+repeat 12 swipe 1100 450 980 450 700
+tap 960 450                     # the chapter picture
+wait 2
+tap 1240 770                    # Oui
+wait 20
+shot ch12-1
+measure ch12-a                  # opening, untouched
+wait 25
+end
+shot ch12-2
+measure ch12-b                  # walk and look around
+repeat 3 stick 0 -32767 5000
+rstick 32767 0 1500
+repeat 2 stick 0 -32767 5000
+rstick -32767 0 3000
+end
+shot ch12-3
+boot
+# chapter 13
+wait 40
+tap 960 600                     # Touchez pour commencer
+wait 3
+swipe 1400 700 700 700 450      # main menu: Continuer -> Chapitres
+tap 960 700
+wait 3
+repeat 13 swipe 1100 450 980 450 700
+tap 960 450                     # the chapter picture
+wait 2
+tap 1240 770                    # Oui
+wait 20
+shot ch13-1
+measure ch13-a                  # opening, untouched
+wait 25
+end
+shot ch13-2
+measure ch13-b                  # walk and look around
+repeat 3 stick 0 -32767 5000
+rstick 32767 0 1500
+repeat 2 stick 0 -32767 5000
+rstick -32767 0 3000
+end
+shot ch13-3
+boot
+# chapter 14
+wait 40
+tap 960 600                     # Touchez pour commencer
+wait 3
+swipe 1400 700 700 700 450      # main menu: Continuer -> Chapitres
+tap 960 700
+wait 3
+repeat 14 swipe 1100 450 980 450 700
+tap 960 450                     # the chapter picture
+wait 2
+tap 1240 770                    # Oui
+wait 20
+shot ch14-1
+measure ch14-a                  # opening, untouched
+wait 25
+end
+shot ch14-2
+measure ch14-b                  # walk and look around
+repeat 3 stick 0 -32767 5000
+rstick 32767 0 1500
+repeat 2 stick 0 -32767 5000
+rstick -32767 0 3000
+end
+shot ch14-3
+boot
+# chapter 15
+wait 40
+tap 960 600                     # Touchez pour commencer
+wait 3
+swipe 1400 700 700 700 450      # main menu: Continuer -> Chapitres
+tap 960 700
+wait 3
+repeat 15 swipe 1100 450 980 450 700
+tap 960 450                     # the chapter picture
+wait 2
+tap 1240 770                    # Oui
+wait 20
+shot ch15-1
+measure ch15-a                  # opening, untouched
+wait 25
+end
+shot ch15-2
+measure ch15-b                  # walk and look around
+repeat 3 stick 0 -32767 5000
+rstick 32767 0 1500
+repeat 2 stick 0 -32767 5000
+rstick -32767 0 3000
+end
+shot ch15-3
+boot
+# chapter 16
+wait 40
+tap 960 600                     # Touchez pour commencer
+wait 3
+swipe 1400 700 700 700 450      # main menu: Continuer -> Chapitres
+tap 960 700
+wait 3
+repeat 16 swipe 1100 450 980 450 700
+tap 960 450                     # the chapter picture
+wait 2
+tap 1240 770                    # Oui
+wait 20
+shot ch16-1
+measure ch16-a                  # opening, untouched
+wait 25
+end
+shot ch16-2
+measure ch16-b                  # walk and look around
+repeat 3 stick 0 -32767 5000
+rstick 32767 0 1500
+repeat 2 stick 0 -32767 5000
+rstick -32767 0 3000
+end
+shot ch16-3
+boot
+# chapter 17
+wait 40
+tap 960 600                     # Touchez pour commencer
+wait 3
+swipe 1400 700 700 700 450      # main menu: Continuer -> Chapitres
+tap 960 700
+wait 3
+repeat 17 swipe 1100 450 980 450 700
+tap 960 450                     # the chapter picture
+wait 2
+tap 1240 770                    # Oui
+wait 20
+shot ch17-1
+measure ch17-a                  # opening, untouched
+wait 25
+end
+shot ch17-2
+measure ch17-b                  # walk and look around
+repeat 3 stick 0 -32767 5000
+rstick 32767 0 1500
+repeat 2 stick 0 -32767 5000
+rstick -32767 0 3000
+end
+shot ch17-3
+boot
+# chapter 18
+wait 40
+tap 960 600                     # Touchez pour commencer
+wait 3
+swipe 1400 700 700 700 450      # main menu: Continuer -> Chapitres
+tap 960 700
+wait 3
+repeat 18 swipe 1100 450 980 450 700
+tap 960 450                     # the chapter picture
+wait 2
+tap 1240 770                    # Oui
+wait 20
+shot ch18-1
+measure ch18-a                  # opening, untouched
+wait 25
+end
+shot ch18-2
+measure ch18-b                  # walk and look around
+repeat 3 stick 0 -32767 5000
+rstick 32767 0 1500
+repeat 2 stick 0 -32767 5000
+rstick -32767 0 3000
+end
+shot ch18-3
+boot
+# chapter 19
+wait 40
+tap 960 600                     # Touchez pour commencer
+wait 3
+swipe 1400 700 700 700 450      # main menu: Continuer -> Chapitres
+tap 960 700
+wait 3
+repeat 19 swipe 1100 450 980 450 700
+tap 960 450                     # the chapter picture
+wait 2
+tap 1240 770                    # Oui
+wait 20
+shot ch19-1
+measure ch19-a                  # opening, untouched
+wait 25
+end
+shot ch19-2
+measure ch19-b                  # walk and look around
+repeat 3 stick 0 -32767 5000
+rstick 32767 0 1500
+repeat 2 stick 0 -32767 5000
+rstick -32767 0 3000
+end
+shot ch19-3
+boot
+# chapter 20
+wait 40
+tap 960 600                     # Touchez pour commencer
+wait 3
+swipe 1400 700 700 700 450      # main menu: Continuer -> Chapitres
+tap 960 700
+wait 3
+repeat 20 swipe 1100 450 980 450 700
+tap 960 450                     # the chapter picture
+wait 2
+tap 1240 770                    # Oui
+wait 20
+shot ch20-1
+measure ch20-a                  # opening, untouched
+wait 25
+end
+shot ch20-2
+measure ch20-b                  # walk and look around
+repeat 3 stick 0 -32767 5000
+rstick 32767 0 1500
+repeat 2 stick 0 -32767 5000
+rstick -32767 0 3000
+end
+shot ch20-3
+boot
+# chapter 21
+wait 40
+tap 960 600                     # Touchez pour commencer
+wait 3
+swipe 1400 700 700 700 450      # main menu: Continuer -> Chapitres
+tap 960 700
+wait 3
+repeat 21 swipe 1100 450 980 450 700
+tap 960 450                     # the chapter picture
+wait 2
+tap 1240 770                    # Oui
+wait 20
+shot ch21-1
+measure ch21-a                  # opening, untouched
+wait 25
+end
+shot ch21-2
+measure ch21-b                  # walk and look around
+repeat 3 stick 0 -32767 5000
+rstick 32767 0 1500
+repeat 2 stick 0 -32767 5000
+rstick -32767 0 3000
+end
+shot ch21-3
+boot
+# chapter 22
+wait 40
+tap 960 600                     # Touchez pour commencer
+wait 3
+swipe 1400 700 700 700 450      # main menu: Continuer -> Chapitres
+tap 960 700
+wait 3
+repeat 22 swipe 1100 450 980 450 700
+tap 960 450                     # the chapter picture
+wait 2
+tap 1240 770                    # Oui
+wait 20
+shot ch22-1
+measure ch22-a                  # opening, untouched
+wait 25
+end
+shot ch22-2
+measure ch22-b                  # walk and look around
+repeat 3 stick 0 -32767 5000
+rstick 32767 0 1500
+repeat 2 stick 0 -32767 5000
+rstick -32767 0 3000
+end
+shot ch22-3
+boot
+# chapter 23
+wait 40
+tap 960 600                     # Touchez pour commencer
+wait 3
+swipe 1400 700 700 700 450      # main menu: Continuer -> Chapitres
+tap 960 700
+wait 3
+repeat 23 swipe 1100 450 980 450 700
+tap 960 450                     # the chapter picture
+wait 2
+tap 1240 770                    # Oui
+wait 20
+shot ch23-1
+measure ch23-a                  # opening, untouched
+wait 25
+end
+shot ch23-2
+measure ch23-b                  # walk and look around
+repeat 3 stick 0 -32767 5000
+rstick 32767 0 1500
+repeat 2 stick 0 -32767 5000
+rstick -32767 0 3000
+end
+shot ch23-3
+boot
+# chapter 24
+wait 40
+tap 960 600                     # Touchez pour commencer
+wait 3
+swipe 1400 700 700 700 450      # main menu: Continuer -> Chapitres
+tap 960 700
+wait 3
+repeat 24 swipe 1100 450 980 450 700
+tap 960 450                     # the chapter picture
+wait 2
+tap 1240 770                    # Oui
+wait 20
+shot ch24-1
+measure ch24-a                  # opening, untouched
+wait 25
+end
+shot ch24-2
+measure ch24-b                  # walk and look around
+repeat 3 stick 0 -32767 5000
+rstick 32767 0 1500
+repeat 2 stick 0 -32767 5000
+rstick -32767 0 3000
+end
+shot ch24-3
+boot
+# chapter 25
+wait 40
+tap 960 600                     # Touchez pour commencer
+wait 3
+swipe 1400 700 700 700 450      # main menu: Continuer -> Chapitres
+tap 960 700
+wait 3
+repeat 25 swipe 1100 450 980 450 700
+tap 960 450                     # the chapter picture
+wait 2
+tap 1240 770                    # Oui
+wait 20
+shot ch25-1
+measure ch25-a                  # opening, untouched
+wait 25
+end
+shot ch25-2
+measure ch25-b                  # walk and look around
+repeat 3 stick 0 -32767 5000
+rstick 32767 0 1500
+repeat 2 stick 0 -32767 5000
+rstick -32767 0 3000
+end
+shot ch25-3
+boot
+# chapter 26
+wait 40
+tap 960 600                     # Touchez pour commencer
+wait 3
+swipe 1400 700 700 700 450      # main menu: Continuer -> Chapitres
+tap 960 700
+wait 3
+repeat 26 swipe 1100 450 980 450 700
+tap 960 450                     # the chapter picture
+wait 2
+tap 1240 770                    # Oui
+wait 20
+shot ch26-1
+measure ch26-a                  # opening, untouched
+wait 25
+end
+shot ch26-2
+measure ch26-b                  # walk and look around
+repeat 3 stick 0 -32767 5000
+rstick 32767 0 1500
+repeat 2 stick 0 -32767 5000
+rstick -32767 0 3000
+end
+shot ch26-3
+boot
+# chapter 27
+wait 40
+tap 960 600                     # Touchez pour commencer
+wait 3
+swipe 1400 700 700 700 450      # main menu: Continuer -> Chapitres
+tap 960 700
+wait 3
+repeat 27 swipe 1100 450 980 450 700
+tap 960 450                     # the chapter picture
+wait 2
+tap 1240 770                    # Oui
+wait 20
+shot ch27-1
+measure ch27-a                  # opening, untouched
+wait 25
+end
+shot ch27-2
+measure ch27-b                  # walk and look around
+repeat 3 stick 0 -32767 5000
+rstick 32767 0 1500
+repeat 2 stick 0 -32767 5000
+rstick -32767 0 3000
+end
+shot ch27-3
+boot
+# chapter 28
+wait 40
+tap 960 600                     # Touchez pour commencer
+wait 3
+swipe 1400 700 700 700 450      # main menu: Continuer -> Chapitres
+tap 960 700
+wait 3
+repeat 28 swipe 1100 450 980 450 700
+tap 960 450                     # the chapter picture
+wait 2
+tap 1240 770                    # Oui
+wait 20
+shot ch28-1
+measure ch28-a                  # opening, untouched
+wait 25
+end
+shot ch28-2
+measure ch28-b                  # walk and look around
+repeat 3 stick 0 -32767 5000
+rstick 32767 0 1500
+repeat 2 stick 0 -32767 5000
+rstick -32767 0 3000
+end
+shot ch28-3
+boot
+# chapter 29
+wait 40
+tap 960 600                     # Touchez pour commencer
+wait 3
+swipe 1400 700 700 700 450      # main menu: Continuer -> Chapitres
+tap 960 700
+wait 3
+repeat 29 swipe 1100 450 980 450 700
+tap 960 450                     # the chapter picture
+wait 2
+tap 1240 770                    # Oui
+wait 20
+shot ch29-1
+measure ch29-a                  # opening, untouched
+wait 25
+end
+shot ch29-2
+measure ch29-b                  # walk and look around
+repeat 3 stick 0 -32767 5000
+rstick 32767 0 1500
+repeat 2 stick 0 -32767 5000
+rstick -32767 0 3000
+end
+shot ch29-3
+boot
+# chapter 30
+wait 40
+tap 960 600                     # Touchez pour commencer
+wait 3
+swipe 1400 700 700 700 450      # main menu: Continuer -> Chapitres
+tap 960 700
+wait 3
+repeat 30 swipe 1100 450 980 450 700
+tap 960 450                     # the chapter picture
+wait 2
+tap 1240 770                    # Oui
+wait 20
+shot ch30-1
+measure ch30-a                  # opening, untouched
+wait 25
+end
+shot ch30-2
+measure ch30-b                  # walk and look around
+repeat 3 stick 0 -32767 5000
+rstick 32767 0 1500
+repeat 2 stick 0 -32767 5000
+rstick -32767 0 3000
+end
+shot ch30-3
+boot
+# chapter 31
+wait 40
+tap 960 600                     # Touchez pour commencer
+wait 3
+swipe 1400 700 700 700 450      # main menu: Continuer -> Chapitres
+tap 960 700
+wait 3
+repeat 31 swipe 1100 450 980 450 700
+tap 960 450                     # the chapter picture
+wait 2
+tap 1240 770                    # Oui
+wait 20
+shot ch31-1
+measure ch31-a                  # opening, untouched
+wait 25
+end
+shot ch31-2
+measure ch31-b                  # walk and look around
+repeat 3 stick 0 -32767 5000
+rstick 32767 0 1500
+repeat 2 stick 0 -32767 5000
+rstick -32767 0 3000
+end
+shot ch31-3
+boot
+# chapter 32
+wait 40
+tap 960 600                     # Touchez pour commencer
+wait 3
+swipe 1400 700 700 700 450      # main menu: Continuer -> Chapitres
+tap 960 700
+wait 3
+repeat 32 swipe 1100 450 980 450 700
+tap 960 450                     # the chapter picture
+wait 2
+tap 1240 770                    # Oui
+wait 20
+shot ch32-1
+measure ch32-a                  # opening, untouched
+wait 25
+end
+shot ch32-2
+measure ch32-b                  # walk and look around
+repeat 3 stick 0 -32767 5000
+rstick 32767 0 1500
+repeat 2 stick 0 -32767 5000
+rstick -32767 0 3000
+end
+shot ch32-3
+boot
+# chapter 33
+wait 40
+tap 960 600                     # Touchez pour commencer
+wait 3
+swipe 1400 700 700 700 450      # main menu: Continuer -> Chapitres
+tap 960 700
+wait 3
+repeat 33 swipe 1100 450 980 450 700
+tap 960 450                     # the chapter picture
+wait 2
+tap 1240 770                    # Oui
+wait 20
+shot ch33-1
+measure ch33-a                  # opening, untouched
+wait 25
+end
+shot ch33-2
+measure ch33-b                  # walk and look around
+repeat 3 stick 0 -32767 5000
+rstick 32767 0 1500
+repeat 2 stick 0 -32767 5000
+rstick -32767 0 3000
+end
+shot ch33-3
+boot
+# chapter 34
+wait 40
+tap 960 600                     # Touchez pour commencer
+wait 3
+swipe 1400 700 700 700 450      # main menu: Continuer -> Chapitres
+tap 960 700
+wait 3
+repeat 34 swipe 1100 450 980 450 700
+tap 960 450                     # the chapter picture
+wait 2
+tap 1240 770                    # Oui
+wait 20
+shot ch34-1
+measure ch34-a                  # opening, untouched
+wait 25
+end
+shot ch34-2
+measure ch34-b                  # walk and look around
+repeat 3 stick 0 -32767 5000
+rstick 32767 0 1500
+repeat 2 stick 0 -32767 5000
+rstick -32767 0 3000
+end
+shot ch34-3
