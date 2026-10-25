@@ -538,10 +538,15 @@ std::optional<TextureLookupResult> VKSurfaceCache::retrieve_color_surface_as_tex
     // We should be able to use this texture, so set it as mru
     color_surface_queue.set_as_mru(&info);
 
-    const vk::ImageView color_handle_view = reinterpret_cast<VKContext *>(state.context)->current_color_view;
+    const VKContext *current_context = reinterpret_cast<VKContext *>(state.context);
+    const vk::ImageView color_handle_view = current_context->current_color_view;
     const bool is_same_image = (color_handle_view == info.texture.view) || (color_handle_view == info.alternate_view);
+    // Sampling the color attachment inside its own render pass is a feedback loop: tilers (Adreno) then read
+    // stale or half-written tiles, which games feed back frame after frame. Only the macroblock sync restarts the
+    // render pass before such a read, otherwise sample the copy taken before the scene, as for depth-stencil.
+    const bool reads_current_attachment = is_same_image && !(current_context->render_target && current_context->render_target->has_macroblock_sync);
 
-    if (state.features.use_texture_viewport && base_format == info.format) {
+    if (state.features.use_texture_viewport && base_format == info.format && !reads_current_attachment) {
         // use a texture viewport
         *texture_viewport = {
             .ratio = {
