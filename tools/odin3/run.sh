@@ -66,10 +66,11 @@ shot() {
   [ -f $ref ] && python3 -I $D/imgdiff.py $ref $OUT/$1.png | tee -a $OUT/summary.txt
   python3 -I $D/glitch.py $OUT/$1.png | grep -E 'BLACK BLOCKS|CORRUPT COLORS' | tee -a $OUT/summary.txt
 }
-# A guest thread stuck on a fault logs gigabytes: keep only both ends of a huge log. Each boot starts a new log.
+# A guest thread stuck on a fault logs gigabytes: keep only both ends of a log over LOG_MAX bytes (32 MB). Each boot
+# starts a new log.
 save_log() {
   local SZ=$($A shell stat -c %s $F/vita3k.log 2>/dev/null | tr -d '\r') L=$OUT/vita3k$1.log
-  if [ "${SZ:-0}" -gt 33554432 ]; then
+  if [ "${SZ:-0}" -gt ${LOG_MAX:-33554432} ]; then
     { $A exec-out head -c 8388608 $F/vita3k.log; print "\n[run.sh: $SZ bytes, middle cut]"
       $A exec-out tail -c 8388608 $F/vita3k.log; } > $L
     $A shell rm -f $F/vita3k.log
