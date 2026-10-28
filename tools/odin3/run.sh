@@ -115,7 +115,7 @@ if [ -n "$PATCH" ]; then
   $A shell mkdir -p $F/patch && $A push $D/patches/$PATCH.txt $F/patch/ >/dev/null || exit 1
 fi
 $A shell input keyevent KEYCODE_WAKEUP; $A shell wm dismiss-keyguard
-$A logcat -c
+# Never clear logcat: it holds the traces of the player's own sessions
 launch
 echo "pkg=$PKG title=$TITLE scenario=${SC:t} edits=$* start=$(date +%T)" > $OUT/context.txt
 
