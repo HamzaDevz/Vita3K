@@ -1,0 +1,141 @@
+# Ninja Gaiden Sigma Plus (PCSE00021): the player's save only holds settings (no game slot), so the point the player
+# reached is a new game; Hero difficulty keeps Ryu alive through the rounds (points.sh), then plays about 5 min
+title PCSE00021
+wait 45
+shot title
+btn start     # Press start
+wait 4
+btn cross     # Nouvelle partie
+wait 4
+btn up        # Heros
+wait 3
+# The first press after moving can be lost; spare presses fall on the intro, whose text prompts they also clear
+btn cross
+wait 6
+btn cross
+wait 6
+btn cross
+wait 6
+btn cross
+wait 6
+btn cross
+wait 6
+btn cross
+wait 6
+btn cross
+wait 6
+btn cross
+wait 6
+btn cross
+wait 6
+btn cross
+wait 6
+btn cross
+wait 6
+btn cross
+wait 6
+btn cross
+wait 6
+shot fight
+# Black squares only grew after 1.5 min of steady play from Hamza's Uncharted save: fight ten rounds of about 25 s
+# (run, slash, jump, look around), a shot after each
+measure p01
+repeat 3 stick 0 -32767 3000
+repeat 4 btn square
+btn triangle 400
+btn cross
+btn square
+stick 0 -32767 2000
+rstick 32767 0 2000
+end
+shot p01
+measure p02
+repeat 3 stick 32767 -20000 3000
+repeat 4 btn square
+btn triangle 400
+btn cross
+btn square
+stick 0 -32767 2000
+rstick 32767 0 2000
+end
+shot p02
+measure p03
+repeat 3 stick 0 32767 3000
+repeat 4 btn square
+btn triangle 400
+btn cross
+btn square
+stick 0 -32767 2000
+rstick 32767 0 2000
+end
+shot p03
+measure p04
+repeat 3 stick -32767 -20000 3000
+repeat 4 btn square
+btn triangle 400
+btn cross
+btn square
+stick 0 -32767 2000
+rstick 32767 0 2000
+end
+shot p04
+measure p05
+repeat 3 stick 0 -32767 3000
+repeat 4 btn square
+btn triangle 400
+btn cross
+btn square
+stick 0 -32767 2000
+rstick 32767 0 2000
+end
+shot p05
+measure p06
+repeat 3 stick 32767 -20000 3000
+repeat 4 btn square
+btn triangle 400
+btn cross
+btn square
+stick 0 -32767 2000
+rstick 32767 0 2000
+end
+shot p06
+measure p07
+repeat 3 stick 0 32767 3000
+repeat 4 btn square
+btn triangle 400
+btn cross
+btn square
+stick 0 -32767 2000
+rstick 32767 0 2000
+end
+shot p07
+measure p08
+repeat 3 stick -32767 -20000 3000
+repeat 4 btn square
+btn triangle 400
+btn cross
+btn square
+stick 0 -32767 2000
+rstick 32767 0 2000
+end
+shot p08
+measure p09
+repeat 3 stick 0 -32767 3000
+repeat 4 btn square
+btn triangle 400
+btn cross
+btn square
+stick 0 -32767 2000
+rstick 32767 0 2000
+end
+shot p09
+measure p10
+repeat 3 stick 32767 -20000 3000
+repeat 4 btn square
+btn triangle 400
+btn cross
+btn square
+stick 0 -32767 2000
+rstick 32767 0 2000
+end
+shot p10
