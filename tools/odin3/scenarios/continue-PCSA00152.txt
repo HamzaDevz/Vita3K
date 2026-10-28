@@ -15,105 +15,164 @@ wait 12
 btn cross     # Loading complete
 wait 20
 shot loaded
-# Black squares only grew after 1.5 min of steady play from Hamza's chapter 1 save: play ten rounds of about
-# 25 s (run, jump, look around), a shot after each
-measure p01
-repeat 3 stick 32767 -20000 5000
+# The hub: open Librom, read Mad Chronicle from its first page to the first quest (extra presses land on the quest's
+# loading screen), wait out the quest's 40 s intro, turn its tutorial pages, then fight
+btn cross     # Librom / Log & Settings
+wait 3
+btn cross     # Librom
+wait 4
 btn cross
-stick 0 -32767 3000
+wait 3
+btn cross
+wait 3
+btn cross
+wait 3
+btn cross     # Mad Chronicle
+wait 4
+btn cross     # Ch. I
+wait 9
+btn cross
+wait 3
+btn cross
+wait 3
+btn cross
+wait 3
+btn cross
+wait 3
+btn cross
+wait 3
+btn cross
+wait 3
+btn cross
+wait 3
+btn cross
+wait 3
+btn cross
+wait 3
+btn cross
+wait 3
+btn cross
+wait 3
+btn cross
+wait 3
+btn cross
+wait 3
+btn cross
+wait 3
+btn cross
+wait 3
+btn cross
+wait 3
+wait 45
+btn cross
+wait 3
+btn cross
+wait 3
+btn cross
+wait 3
+btn cross
+wait 3
+wait 3
+shot quest
+# Black squares only grew after 1.5 min of steady play from Hamza's chapter 1 save: fight ten rounds of about 25 s
+# (run, cast, punch, dodge, look around), a shot after each
+measure p01
+repeat 3 stick 32767 -20000 4000
+btn square 1500
+btn triangle
+btn triangle
+stick 0 -32767 2000
 btn cross
 rstick 32767 0 2000
-rstick 0 -20000 800
-rstick 0 20000 800
 end
 shot p01
 measure p02
-repeat 3 stick 0 32767 5000
-btn cross
-stick 0 -32767 3000
+repeat 3 stick 0 32767 4000
+btn square 1500
+btn triangle
+btn triangle
+stick 0 -32767 2000
 btn cross
 rstick 32767 0 2000
-rstick 0 -20000 800
-rstick 0 20000 800
 end
 shot p02
 measure p03
-repeat 3 stick -32767 -20000 5000
-btn cross
-stick 0 -32767 3000
+repeat 3 stick -32767 -20000 4000
+btn square 1500
+btn triangle
+btn triangle
+stick 0 -32767 2000
 btn cross
 rstick 32767 0 2000
-rstick 0 -20000 800
-rstick 0 20000 800
 end
 shot p03
 measure p04
-repeat 3 stick 0 -32767 5000
-btn cross
-stick 0 -32767 3000
+repeat 3 stick 0 -32767 4000
+btn square 1500
+btn triangle
+btn triangle
+stick 0 -32767 2000
 btn cross
 rstick 32767 0 2000
-rstick 0 -20000 800
-rstick 0 20000 800
 end
 shot p04
 measure p05
-repeat 3 stick 32767 -20000 5000
-btn cross
-stick 0 -32767 3000
+repeat 3 stick 32767 -20000 4000
+btn square 1500
+btn triangle
+btn triangle
+stick 0 -32767 2000
 btn cross
 rstick 32767 0 2000
-rstick 0 -20000 800
-rstick 0 20000 800
 end
 shot p05
 measure p06
-repeat 3 stick 0 32767 5000
-btn cross
-stick 0 -32767 3000
+repeat 3 stick 0 32767 4000
+btn square 1500
+btn triangle
+btn triangle
+stick 0 -32767 2000
 btn cross
 rstick 32767 0 2000
-rstick 0 -20000 800
-rstick 0 20000 800
 end
 shot p06
 measure p07
-repeat 3 stick -32767 -20000 5000
-btn cross
-stick 0 -32767 3000
+repeat 3 stick -32767 -20000 4000
+btn square 1500
+btn triangle
+btn triangle
+stick 0 -32767 2000
 btn cross
 rstick 32767 0 2000
-rstick 0 -20000 800
-rstick 0 20000 800
 end
 shot p07
 measure p08
-repeat 3 stick 0 -32767 5000
-btn cross
-stick 0 -32767 3000
+repeat 3 stick 0 -32767 4000
+btn square 1500
+btn triangle
+btn triangle
+stick 0 -32767 2000
 btn cross
 rstick 32767 0 2000
-rstick 0 -20000 800
-rstick 0 20000 800
 end
 shot p08
 measure p09
-repeat 3 stick 32767 -20000 5000
-btn cross
-stick 0 -32767 3000
+repeat 3 stick 32767 -20000 4000
+btn square 1500
+btn triangle
+btn triangle
+stick 0 -32767 2000
 btn cross
 rstick 32767 0 2000
-rstick 0 -20000 800
-rstick 0 20000 800
 end
 shot p09
 measure p10
-repeat 3 stick 0 32767 5000
-btn cross
-stick 0 -32767 3000
+repeat 3 stick 0 32767 4000
+btn square 1500
+btn triangle
+btn triangle
+stick 0 -32767 2000
 btn cross
 rstick 32767 0 2000
-rstick 0 -20000 800
-rstick 0 20000 800
 end
 shot p10
