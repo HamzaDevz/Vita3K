@@ -40,7 +40,7 @@ OWNER=${LOCK_OWNER:-vita3k}
 $D/lock.sh take $OWNER || exit 1
 # The build's own config, its per-game config and the player's save in the shared installation come back at
 # the end, so a player's build (PKG=...) keeps its progress and settings
-trap '$A shell pkill -f $T/poll.sh; [ "$KEEP" = 1 ] || { $A shell am force-stop $PKG
+trap '[ -n "$SEG" ] && touch $SEG/.stop; $A shell pkill -f $T/poll.sh; [ "$KEEP" = 1 ] || { $A shell am force-stop $PKG
   [ -f $D/base/$PKG/config.yml ] && $A push $D/base/$PKG/config.yml $F/config.yml >/dev/null
   for p in $PUT_ASIDE; do $A shell "[ -e $p.player ] && rm -rf $p && mv $p.player $p"; done
   [ "$NEWPATCH" = 1 ] && $A shell rm -f $F/patch/$PATCH.txt; }
