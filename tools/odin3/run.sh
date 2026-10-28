@@ -82,6 +82,15 @@ save_log() {
     tee -a $OUT/summary.txt
 }
 BOOTS=0
+# Android keeps every native crash and ANR of the build: their cause goes into the summary
+os_crashes() {
+  for tag in data_app_native_crash data_app_anr; do
+    $A shell dumpsys dropbox --print $tag | tr -d '\r' | awk -v s="$RUN_START" -v p="$PKG" -v k=${tag#data_app_} '
+      / data_app_(native_crash|anr) / { t = $1 " " $2; mine = 0 }
+      $0 == "Process: " p { mine = (t >= s); if (mine) n[t] = 0 }
+      mine && /^(Abort message:|signal [0-9]|Subject:)/ && n[t]++ < 2 { print k " at " t ": " substr($0, 1, 150) }'
+  done
+}
 launch() {
   $A shell am force-stop $PKG
   $A shell am start -n $PKG/org.vita3k.emulator.Emulator --es title_id $TITLE >/dev/null
@@ -115,6 +124,7 @@ if [ -n "$PATCH" ]; then
   $A shell mkdir -p $F/patch && $A push $D/patches/$PATCH.txt $F/patch/ >/dev/null || exit 1
 fi
 $A shell input keyevent KEYCODE_WAKEUP; $A shell wm dismiss-keyguard
+RUN_START=$($A shell date "'+%Y-%m-%d %H:%M:%S'" | tr -d '\r')
 # Never clear logcat: it holds the traces of the player's own sessions
 launch
 echo "pkg=$PKG title=$TITLE scenario=${SC:t} edits=$* start=$(date +%T)" > $OUT/context.txt
@@ -180,6 +190,7 @@ for line in "${(@f)$(<$SC)}"; do step ${=line%%\#*}; done
   2>/dev/null | tr -d '\r' | head -n 120 > $OUT/profile.txt
 focused || echo "WARNING: Vita3K no longer has the focus (crash?)" | tee -a $OUT/summary.txt
 save_log $([ $BOOTS = 0 ] || echo -$BOOTS)
+os_crashes | tee -a $OUT/summary.txt
 S=$OUT/summary.txt
 echo "verdict: $(grep -c 'BELOW TARGET' $S)/$(grep -c '^\[' $S) segments below target," \
   "$(grep -cE 'BLACK BLOCKS|CORRUPT COLORS|BROKEN RENDER' $S)/$(wc -l < $OUT/shots.txt 2>/dev/null | tr -d ' ') shots broken," \
