@@ -416,6 +416,7 @@ void VKContext::start_render_pass(bool create_descriptor_set, bool maskupdate) {
     // set the renderpass info ready in case we need to switch between classic and framebuffer fetch usage
     curr_renderpass_info.setClearValues(nullptr);
     last_draw_was_framebuffer_fetch = false;
+    render_pass_has_subpass_fetch = false;
 
     refresh_pipeline = true;
     current_pipeline = nullptr;

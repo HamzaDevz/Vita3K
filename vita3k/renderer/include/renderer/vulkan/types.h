@@ -342,6 +342,8 @@ struct VKContext : public renderer::Context {
     vk::RenderPassBeginInfo curr_renderpass_info;
     // only useful if shader interlock is enabled, to know if we need to transition
     bool last_draw_was_framebuffer_fetch;
+    // a draw reading the color attachment as a subpass input already ran in the current render pass
+    bool render_pass_has_subpass_fetch = false;
 
     // only used if memory mapping is enabled
     std::mutex new_frame_mutex;

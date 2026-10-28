@@ -1127,6 +1127,13 @@ static SpirvShaderParameters create_parameters(spv::Builder &b, const SceGxmProg
             b.addDecoration(spv_params.is_srgb_constant, spv::DecorationSpecId, static_cast<int>(GAMMA_CORRECTION_SPECIALIZATION_ID));
             b.addName(spv_params.is_srgb_constant, "is_srgb");
         }
+
+        if (translation_state.is_vulkan) {
+            // layout (constant_id = UFLOAT_TARGET_SPECIALIZATION_ID) const bool is_ufloat_target = false;
+            spv_params.is_ufloat_target_constant = b.makeBoolConstant(false, true);
+            b.addDecoration(spv_params.is_ufloat_target_constant, spv::DecorationSpecId, static_cast<int>(UFLOAT_TARGET_SPECIALIZATION_ID));
+            b.addName(spv_params.is_ufloat_target_constant, "is_ufloat_target");
+        }
     }
 
     spv_params.render_info_id = translation_state.render_info_id;
@@ -1634,6 +1641,23 @@ static spv::Function *make_frag_finalize_function(spv::Builder &b, const SpirvSh
 
     if (!is_float_data_type(color_val_operand.type))
         color = utils::convert_to_float(b, utils, color, color_val_operand.type, true);
+
+    if (parameters.is_ufloat_target_constant != 0) {
+        // U2F10F10F10 stores no negative, NaN or infinite color and a unorm alpha:
+        // color = is_ufloat_target ? (color > 0 ? min(color, max_value) : 0) : color
+        const spv::Id f32 = b.makeFloatType(32);
+        const spv::Id v4 = b.makeVectorType(f32, 4);
+        const spv::Id bv4 = b.makeVectorType(b.makeBoolType(), 4);
+        const spv::Id zero = utils::make_uniform_vector_from_type(b, v4, 0.0f);
+        const spv::Id f10_max = b.makeFloatConstant(64512.0f);
+        const spv::Id max_value = b.makeCompositeConstant(v4, { f10_max, f10_max, f10_max, b.makeFloatConstant(1.0f) });
+        const spv::Id positive = b.createBinOp(spv::OpFOrdGreaterThan, bv4, color, zero);
+        spv::Id clamped = b.createBuiltinCall(v4, utils.std_builtins, GLSLstd450FMin, { color, max_value });
+        clamped = b.createTriOp(spv::OpSelect, v4, positive, clamped, zero);
+        const spv::Id is_ufloat = parameters.is_ufloat_target_constant;
+        const spv::Id ufloat_mask = b.createCompositeConstruct(bv4, { is_ufloat, is_ufloat, is_ufloat, is_ufloat });
+        color = b.createTriOp(spv::OpSelect, v4, ufloat_mask, clamped, color);
+    }
 
     if (program.is_frag_color_used() && features.should_use_shader_interlock()) {
         spv::Id signed_i32 = b.makeIntType(32);

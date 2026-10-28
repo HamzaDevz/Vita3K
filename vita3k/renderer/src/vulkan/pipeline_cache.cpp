@@ -449,39 +449,35 @@ void PipelineCache::cleanup() {
     nb_worker_threads = 0;
 }
 
-// Vulkan structs used to specify a specialization constant
+// Vulkan structs used to specify the specialization constants
 // Also, booleans in SPIRV are 32bit wide
-static const vk::SpecializationMapEntry srgb_entry = {
-    .constantID = shader::GAMMA_CORRECTION_SPECIALIZATION_ID,
-    .offset = 0,
-    .size = sizeof(uint32_t)
+static const vk::SpecializationMapEntry spec_entries[] = {
+    { .constantID = shader::GAMMA_CORRECTION_SPECIALIZATION_ID, .offset = 0, .size = sizeof(uint32_t) },
+    { .constantID = shader::UFLOAT_TARGET_SPECIALIZATION_ID, .offset = sizeof(uint32_t), .size = sizeof(uint32_t) },
 };
 
-static const uint32_t srgb_entry_true = vk::True;
-static const uint32_t srgb_entry_false = vk::False;
-
-static const vk::SpecializationInfo srgb_info_true = {
-    .mapEntryCount = 1,
-    .pMapEntries = &srgb_entry,
-    .dataSize = sizeof(uint32_t),
-    .pData = &srgb_entry_true
+// indexed by is_srgb + 2 * is_ufloat_target
+static const uint32_t spec_data[4][2] = {
+    { vk::False, vk::False },
+    { vk::True, vk::False },
+    { vk::False, vk::True },
+    { vk::True, vk::True },
 };
 
-static const vk::SpecializationInfo srgb_info_false = {
-    .mapEntryCount = 1,
-    .pMapEntries = &srgb_entry,
-    .dataSize = sizeof(uint32_t),
-    .pData = &srgb_entry_false
-};
+#define SPEC_INFO(i) { .mapEntryCount = 2, .pMapEntries = spec_entries, .dataSize = sizeof(spec_data[i]), .pData = spec_data[i] }
+static const vk::SpecializationInfo spec_infos[4] = { SPEC_INFO(0), SPEC_INFO(1), SPEC_INFO(2), SPEC_INFO(3) };
+#undef SPEC_INFO
 
-vk::PipelineShaderStageCreateInfo PipelineCache::retrieve_shader(const SceGxmProgram *program, const Sha256Hash &hash, bool is_vertex, bool maskupdate, MemState &mem, const shader::Hints &hints, bool is_srgb) {
+vk::PipelineShaderStageCreateInfo PipelineCache::retrieve_shader(const SceGxmProgram *program, const Sha256Hash &hash, bool is_vertex, bool maskupdate, MemState &mem, const shader::Hints &hints, bool is_srgb, bool is_ufloat_target) {
     const vk::ShaderModule shader_compiling = std::bit_cast<vk::ShaderModule>(~0ULL);
     const bool masked_fetch = !is_vertex && hints.masked_framebuffer_fetch;
 
+    // entries for specialization constants a shader does not declare are ignored
     const vk::SpecializationInfo *spec_info = nullptr;
-    if (!is_vertex && !masked_fetch && state.features.should_use_shader_interlock() && program->is_frag_color_used()) {
-        // if the specialization constant is used in the shader
-        spec_info = is_srgb ? &srgb_info_true : &srgb_info_false;
+    if (!is_vertex && !maskupdate) {
+        // is_srgb is only declared by shaders using the color attachment as a storage image
+        const bool srgb_used = !masked_fetch && state.features.should_use_shader_interlock() && program->is_frag_color_used();
+        spec_info = &spec_infos[static_cast<int>(srgb_used && is_srgb) + 2 * static_cast<int>(is_ufloat_target)];
     }
 
     vk::ShaderModule *shader_module;
@@ -926,7 +922,8 @@ vk::Pipeline PipelineCache::compile_pipeline(SceGxmPrimitiveType type, vk::Rende
             .pName = "main_fs"
         };
     } else if (!is_fragment_disabled) {
-        fragment_shader = retrieve_shader(gxm_fragment_shader, fragment_program.hash, false, maskupdate, mem, hints, record.is_gamma_corrected);
+        fragment_shader = retrieve_shader(gxm_fragment_shader, fragment_program.hash, false, maskupdate, mem, hints, record.is_gamma_corrected,
+            record.color_base_format == SCE_GXM_COLOR_BASE_FORMAT_U2F10F10F10);
     }
     const vk::PipelineShaderStageCreateInfo shader_stages[] = { vertex_shader, fragment_shader };
     // Depth-only draws still need the mask test before depth/stencil updates.

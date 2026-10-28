@@ -107,6 +107,9 @@ struct SpirvShaderParameters {
 
     // When using shader interlock, specialization constant telling us if the texture is gamma corrected
     spv::Id is_srgb_constant;
+
+    // Specialization constant telling us if the color surface is an unsigned float format
+    spv::Id is_ufloat_target_constant = 0;
 };
 
 using Coord = std::pair<spv::Id, int>;

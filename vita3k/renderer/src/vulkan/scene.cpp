@@ -433,8 +433,15 @@ void draw(VKContext &context, SceGxmPrimitiveType type, SceGxmIndexFormat format
     if (context.in_renderpass && context.in_maskupdate_pass != maskupdate)
         context.stop_render_pass();
 
+    // The stock Adreno driver can return garbage to a subpass input read of the color attachment when an earlier
+    // draw of the same render pass also read it, despite the by-region barrier: give each such draw its own pass
+    const bool subpass_fetch = uses_framebuffer_fetch && context.state.features.direct_fragcolor;
+    if (subpass_fetch && context.in_renderpass && context.render_pass_has_subpass_fetch && context.state.is_adreno_stock)
+        context.stop_render_pass();
+
     if (!context.in_renderpass)
         context.start_render_pass(true, maskupdate);
+    context.render_pass_has_subpass_fetch |= subpass_fetch;
 
     // when we do multiple render pass for one scene (shader interlock or slow macroblock),
     // we need to always load the depth-stencil after the first draw
