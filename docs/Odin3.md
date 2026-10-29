@@ -29,7 +29,9 @@ Un `shot` qui a une référence dans `refs/<scénario>/` est en plus comparé à
 d'écart, `BROKEN RENDER`. La couche de validation est toujours forcée à `false`. `PKG=` mesure une autre build,
 dont la configuration est rendue à la fin. Variables : `TARGET=60`, `COLD=1` (cache de shaders vide), `HOLD=1`
 (garder le verrou pour une série), `LOCK_OWNER`, `PROFILE=<segment>:<s>` (simpleperf sur ce segment, dans un run
-à part, vers `profile.txt`).
+à part, vers `profile.txt`), `TV=1` (jouer et capturer sur la TV branchée en HDMI, en 4K comme depuis ES-DE),
+`KEEP=1` (laisser le jeu tourner : la sauvegarde et la config du joueur restent alors à l'écart, en `<chemin>.player`,
+à remettre à la main).
 
 Chaque `shot`, référence ou non, est aussi fouillé (`glitch.py`) : blocs noirs, même rongeant l'image depuis un bord (`BLACK BLOCKS`), et aplats vert ou bleu fluo (`CORRUPT COLORS`). Un segment
 sous 95 % de `TARGET` ou avec plus de 2 % de trames lentes est `BELOW TARGET`. La dernière ligne, `verdict`, compte

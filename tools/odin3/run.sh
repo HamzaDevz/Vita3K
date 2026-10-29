@@ -6,7 +6,8 @@
 #             and the save restored before booting, a `patch` line a game patch from patches/ (Vita3K format);
 #             TITLE=<ID> and SAVE=<dir of saves/> override them
 #   TARGET    frame rate the game aims for, for the slow-frame count (default 30)
-#   KEEP=1    leave the game running at the end
+#   KEEP=1    leave the game running at the end (the player's save and settings then stay set aside)
+#   TV=1      play on the TV (HDMI display) instead of the console's screen, as the player does from ES-DE
 #   COLD=1    start from an empty shader and pipeline cache (first play)
 #   HOLD=1    keep the lock for the next run of a series (the series releases it, within ~15 min)
 #   LOCK_OWNER  lock owner (default vita3k): each parallel session has its own
@@ -28,8 +29,13 @@ F=/storage/emulated/0/Android/data/$PKG/files
 # PREF=<dir> runs on another installation, such as the player's on the SD card
 V=${PREF:-/storage/emulated/0/vita3k-bench/vita}
 T=/data/local/tmp/vita3k
-# With a TV plugged in, screencap needs the console's own screen
-SCREEN=$($A shell dumpsys SurfaceFlinger --display-id | sed -n 's/^Display \([0-9]*\) (HWC display 0).*/\1/p')
+# With a TV plugged in, screencap and the game need the display they play on: its logical id for am start, its
+# SurfaceFlinger id for screencap; taps are scaled from 1920x1080 to its size
+DISP=($($A shell dumpsys display | grep 'mBaseDisplayInfo=DisplayInfo' |
+  grep -oE 'displayId [0-9]+|real [0-9]+ x [0-9]+|type [A-Z]+|uniqueId "?local:[0-9]+' | paste - - - - |
+  grep -m1 "type $([ "$TV" = 1 ] && echo EXTERNAL || echo INTERNAL)"))
+[ -n "$DISP" ] || { echo "no ${TV:+HDMI }display" >&2; exit 2; }
+ON=$DISP[2] SCREEN=${DISP[-1]##*local:} WIDE=$(( DISP[4] > DISP[6] ? DISP[4] : DISP[6] ))
 [ -f $SC ] || { echo "no scenario $SC"; exit 2; }
 TITLE=${TITLE:-$(sed -n 's/^title \([^ #]*\).*/\1/p' $SC)}
 SAVE=${SAVE:-$(sed -n 's/^save \([^ #]*\).*/\1/p' $SC)}
@@ -44,6 +50,7 @@ trap '[ -n "$SEG" ] && touch $SEG/.stop; $A shell pkill -f $T/poll.sh; [ "$KEEP"
   [ -f $D/base/$PKG/config.yml ] && $A push $D/base/$PKG/config.yml $F/config.yml >/dev/null
   for p in $PUT_ASIDE; do $A shell "[ -e $p.player ] && rm -rf $p && mv $p.player $p"; done
   [ "$NEWPATCH" = 1 ] && $A shell rm -f $F/patch/$PATCH.txt; }
+  [ "$KEEP" = 1 ] && print -u2 "KEEP=1: stop the game, then move back each <path>.player: $PUT_ASIDE"
   [ "$HOLD" = 1 ] || $D/lock.sh release $OWNER' EXIT
 PUT_ASIDE=()
 put_aside() { PUT_ASIDE+=($1); $A shell "[ -e $1.player ] || { [ -e $1 ] && mv $1 $1.player; }; rm -rf $1"; }
@@ -94,7 +101,7 @@ os_crashes() {
 }
 launch() {
   $A shell am force-stop $PKG
-  $A shell am start -n $PKG/org.vita3k.emulator.Emulator --es title_id $TITLE >/dev/null
+  $A shell am start --display $ON -n $PKG/org.vita3k.emulator.Emulator --es title_id $TITLE >/dev/null
   for i in $(seq 60); do focused && return; sleep 1; done
   echo "ABORT: the Emulator activity never got the focus" | tee -a $OUT/summary.txt; exit 1
 }
@@ -169,8 +176,10 @@ step() {
     wait) sleep $2;;
     btn|stick|rstick) pad "$@";;
     # A short tap is not seen by the games: hold the finger 250 ms (screen pixels, 1920x1080 landscape)
-    tap) need_focus && $A shell input swipe $2 $3 $2 $3 250;;
-    swipe) need_focus && $A shell input swipe $2 $3 $4 $5 $6;;
+    tap) need_focus && $A shell input -d $ON swipe $(( $2 * WIDE / 1920 )) $(( $3 * WIDE / 1920 )) \
+      $(( $2 * WIDE / 1920 )) $(( $3 * WIDE / 1920 )) 250;;
+    swipe) need_focus && $A shell input -d $ON swipe $(( $2 * WIDE / 1920 )) $(( $3 * WIDE / 1920 )) \
+      $(( $4 * WIDE / 1920 )) $(( $5 * WIDE / 1920 )) $6;;
     # Players put the console to sleep mid-game: Android pauses the game and takes its surface away
     suspend) $A shell input keyevent KEYCODE_SLEEP; sleep $2
       $A shell input keyevent KEYCODE_WAKEUP; $A shell wm dismiss-keyguard
