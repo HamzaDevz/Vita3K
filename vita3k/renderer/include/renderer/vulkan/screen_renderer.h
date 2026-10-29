@@ -108,5 +108,6 @@ private:
     bool ensure_swapchain();
     bool rebuild_swapchain_if_visible();
     bool surface_matches_window_size();
+    vk::Extent2D fit_extent(vk::Extent2D window) const;
 };
 } // namespace renderer::vulkan

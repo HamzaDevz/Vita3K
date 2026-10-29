@@ -17,6 +17,7 @@
 
 #include "renderer/vulkan/screen_renderer.h"
 
+#include "renderer/types.h"
 #include "renderer/vulkan/state.h"
 #include "util/log.h"
 #include "vkutil/vkutil.h"
@@ -234,7 +235,7 @@ void ScreenRenderer::create_swapchain() {
     surface_capabilities = state.physical_device.getSurfaceCapabilitiesKHR(surface);
 
     if (surface_capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max()) {
-        extent = surface_capabilities.currentExtent;
+        extent = fit_extent(surface_capabilities.currentExtent);
     } else {
         auto *frame_host = static_cast<renderer::State &>(state).frame;
         extent.width = std::clamp<uint32_t>(static_cast<uint32_t>(frame_host->drawable_width()), surface_capabilities.minImageExtent.width, surface_capabilities.maxImageExtent.width);
@@ -733,8 +734,21 @@ bool ScreenRenderer::surface_matches_window_size() {
     if (frame_host->drawable_width() == 0 || frame_host->drawable_height() == 0)
         return true;
 
-    return extent.width == static_cast<uint32_t>(frame_host->drawable_width())
-        && extent.height == static_cast<uint32_t>(frame_host->drawable_height());
+    return extent == fit_extent({ static_cast<uint32_t>(frame_host->drawable_width()), static_cast<uint32_t>(frame_host->drawable_height()) });
+}
+
+// Where the surface accepts a smaller swapchain (Android), the compositor scales it to the window for free: a 4K TV
+// would otherwise have the screen filter (FSR) and the presentation work over 8 million pixels for a 960x544 game
+vk::Extent2D ScreenRenderer::fit_extent(vk::Extent2D window) const {
+    const uint32_t limit = std::max(1920U, static_cast<uint32_t>(DEFAULT_RES_WIDTH * state.res_multiplier));
+    const uint32_t longest = std::max(window.width, window.height);
+    if (longest <= limit || surface_capabilities.minImageExtent == surface_capabilities.maxImageExtent)
+        return window;
+
+    return {
+        std::clamp(window.width * limit / longest, surface_capabilities.minImageExtent.width, surface_capabilities.maxImageExtent.width),
+        std::clamp(window.height * limit / longest, surface_capabilities.minImageExtent.height, surface_capabilities.maxImageExtent.height)
+    };
 }
 
 } // namespace renderer::vulkan
